@@ -1,7 +1,77 @@
 <% provide(:title, "Home") %>
+
+<div class="pattern-back page-header">
+  <div class="ui container">
+    <h1 class="page-header__heading">Dashboard</h1>
+  </div>
+</div>
+
 <section>
-	<div class="ui container">
-		<h1>UofT Course Info App</h1>
-		<h2>This is the home page for the UofT Course Info Project</h2>
-	</div>
+  <div class="ui container">
+    <div class="ui two column stackable grid">
+      <div class="four wide column">
+        <div class="ui card">
+          <div class="image">
+            <%= gravatar_for current_user, size: 300, class: "ui image" %>
+          </div>
+          <div class="content">
+            <a class="header"><%= current_user.first_name %> <%= current_user.last_name %></a>
+            <div class="meta">
+              <span class="date">Joined on <%= current_user.created_at.to_date.to_formatted_s(:long_ordinal) %></span>
+            </div>
+            <div class="description">
+              <%= current_user.about %>
+            </div>
+          </div>
+          <div class="extra content">
+            <a>
+              <i class="user icon"></i>
+              TODO: Friend Count &amp; List
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="twelve wide column">
+        <h2>
+          Added Courses
+          <%= link_to("Add More", courses_path, :class => 'ui label') %>
+        </h2>
+        <div class="ui cards">
+          <% current_user.courses.each do |course| %>
+            <%= link_to course_path(course), :class => "ui card" do %>
+            <div class="content">
+              <div class="header"><%= course.title %></div>
+              <div class="meta"><%= course.code %></div>
+              <div class="description">
+                <%= truncate(course.description) %>
+              </div>
+            </div>
+            <% end -%>
+          <% end -%>
+        </div>
+
+        <h2>Suggested Courses</h2>
+        <p>TODO: Suggest courses based off of ones that have been taken before.</p>
+
+        <h2>Past Courses</h2>
+        <p>TODO: Get courses from previous academic years.</p>
+        <div class="ui styled fluid accordion">
+          <div class="title">
+            <i class="dropdown icon"></i>
+            YEAR 1
+          </div>
+          <div class="content">
+            <p>Courses</p>
+          </div>
+          <div class="title">
+            <i class="dropdown icon"></i>
+            YEAR 2
+          </div>
+          <div class="content">
+            <p>Courses</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

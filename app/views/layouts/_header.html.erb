@@ -8,7 +8,7 @@
         <%= link_to("Explore", courses_path, :class => 'item') %>
         <% if user_signed_in? %>
             <div class="ui dropdown item">
-              <%= gravatar_for current_user %>
+              <%= gravatar_for current_user, class: "ui avatar image" %>
               <i class="dropdown icon"></i>
               <div class="menu">
                 <div class="header">Signed in as <%= current_user.first_name %> <%= current_user.last_name %></div>

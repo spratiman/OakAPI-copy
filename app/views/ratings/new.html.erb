@@ -11,19 +11,19 @@
       </ul>
     </div>
   <% end %>
-<%= form_for([@course, @course.ratings.build], :html => {:class => 'ui inverted form'}) do |f| %>
+
   <div class="four fields">
     <% Rating::RATING_TYPES.each do |type| %>
+
+    <%= form_for([@course, @course.ratings.build], :html => {:class => 'ui inverted form'}) do |f| %>
     
     <div class="field">
-      <%= f.label :rating_type, :value=>type , :readonly=>true %>
+      <%= f.label :rating_type, :value=>type %>
+      <%= f.text_field :rating_type, :type=>'hidden', :value=>type , :readonly=>true %>
       <%= f.select(:value, [1, 2, 3, 4, 5]) %>  
+      <%= f.submit "Submit", :class => 'ui secondary button' %>
     </div>
+    <% end %>
     
     <% end %>
   </div>
-
-  <div class="field">
-    <%= f.submit "Submit", :class => 'ui secondary button' %>
-  </div>
-<% end %>
