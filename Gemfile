@@ -69,3 +69,8 @@ gem 'filterrific'
 gem 'will_paginate'
 
 gem 'ancestry'
+
+# Semantic UI
+gem 'therubyracer'
+gem 'less-rails-semantic_ui', '~> 2.2.9'
+gem 'autoprefixer-rails'

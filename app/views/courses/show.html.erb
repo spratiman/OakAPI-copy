@@ -1,54 +1,49 @@
 <% provide(:title, @course.code+": "+@course.title) %>
 
-<section class="pattern-back page-header">
-  <div class="container">
+<div class="pattern-back page-header">
+  <div class="ui container">
     <h1 class="page-header__heading"><span class="course-code"><%= @course.code %>:</span> <%= @course.title %></h1>
   </div>
-</section>
+</div>
 
-<section class="ratings">
-  <div class="container center">
-    <h2>Course Rating</h2>
-    <h3>Overall(<%= @course.ratings.overall.count() %>)</h3>
-    <p><%= @course.ratings.overall.average(:value) %></p>
-    <h3>Usefulness(<%= @course.ratings.usefulness.count() %>)</h3>
-    <p><%= @course.ratings.usefulness.average(:value) %></p>
-    <h3>Difficulty(<%= @course.ratings.difficulty.count() %>)</h3>
-    <p><%= @course.ratings.difficulty.average(:value) %></p>
-    <h3>Course Load(<%= @course.ratings.courseload.count() %>)</h3>
-    <p><%= @course.ratings.courseload.average(:value) %></p>
-
-   <h2> Rate course:</h2>
-   <%= render :template => 'ratings/new' %>
-
+<div class="ratings">
+  <div class="ui center aligned container">
+    
+    <%= render "ratings/display" %>
+    
+    <div class="stripe">
+      <% if user_signed_in? %>
+        <h2> Rate course:</h2>
+        <%= render :template => 'ratings/new' %>
+      <% else %>
+        <%= link_to("Add Rating", new_user_session_path, :class => 'ui basic inverted button') %>
+      <% end -%>
+    </div>
   </div>
-</section>
+</div>
 
 <section class="course-information">
-  <div class="container">
-    <div class="row">
-      <div class="col-12 col-lg-8">
-        <h2>Description</h2>
-        <p><%= @course.description %></p>
-      </div>
+  <div class="ui grid container">
 
-      <div class="col-12 col-lg-4">
-        <h3>Distribution Requirement Status</h3>
-        <p></p>
-        <h3>Breadth Requirements</h3>
-      </div>
+    <div class="eight wide column">
+      <h2>Description</h2>
+      <p><%= @course.description %></p>
+      <%= link_to 'Edit', edit_course_path(@course) %>
+      <%= link_to 'Back', courses_path %>
     </div>
 
-    <%= link_to 'Edit', edit_course_path(@course) %>
-    <%= link_to 'Back', courses_path %>
-
+    <div class="right floated left aligned six wide column">
+      <h3>Distribution Requirement Status</h3>
+      <p></p>
+      <h3>Breadth Requirements</h3>
+    </div>
+    
   </div>
 </section>
 
-<section class="comments">
 
-  <div class="container">
-    <%= render :template => 'comments/index' , :locals => {:num => 6} %>
-    <%= render :template => 'comments/new' %>
+<section class="comments">
+  <div class="ui text container">
+    <%= render :template => 'comments/index' %>
   </div>
 </section>

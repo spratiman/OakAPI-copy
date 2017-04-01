@@ -1,38 +1,22 @@
-<div class="img-with-text row middle">
-      <%= image_tag("comments.png", :class => "img-with-text__img") %>
-      <h2 class="img-with-text__text">Comments</h2>
-    </div>
-    <div class="comment-count">
-      <span class="comment-count__number"><%= @course.comments.count %></span>
-      <span class="comment-count__label"><%= (@course.comments.count == 1 ? "Comment" : "Comments") %></span>
-    </div>
-    <div class="row">
-      <% count = 0 %>
-      <% @course.comments.each do |comment| %>
-        <% if defined?(num) && count >= num %>
-          <div class="card col-6 hidden-comment">
-        <% else %>
-          <div class="card col-6">
-        <% end %>
-          <strong>Commenter:</strong>
-          <%= comment.user_id %>
 
-          <p>
-            <%= comment.body %>
-          </p>
-          <% if user_signed_in? && current_user.id == comment.user_id %>
-            <td><%= link_to 'Edit', edit_course_comment_path(@course, comment) %></td>
-          <% end %>
-          <td><%= link_to 'Reply', course_comment_path(@course, comment) %></td>
-          <% if comment.has_children? %>
-            <td>Children = <%= comment.child_ids %></td>
-          <% end %>
-        </div>
-        <% count = count + 1 %>
-      <% end %>
-    </div>
-    <% if defined?(num) && @course.comments.count > num %>
-      <div class="row center">
-        <button class="btn btn--large btn--link" id="showAllComments">Show all</button>
+<div class="img-with-text row middle">
+  <%= image_tag("comments.png", :class => "img-with-text__img") %>
+  <h2 class="img-with-text__text">Comments</h2>
+</div>
+
+<div class="comment-count">
+  <span class="comment-count__number"><%= @course.comments.count %></span>
+  <span class="comment-count__label"><%= (@course.comments.count == 1 ? "Comment" : "Comments") %></span>
+</div>
+
+<div class="ui threaded comments">
+  
+  <%= render 'comments/list', comments: @course.comments %>
+
+  <%= form_for([@course, @course.comments.build], html: {class: "ui reply form"}) do |f| %>
+      <div class="field">
+        <%= f.text_area(:body) %>
       </div>
-    <% end %>
+      <%= f.submit("Submit Comment", :class => 'ui blue submit button') %>
+  <% end %>
+</div>

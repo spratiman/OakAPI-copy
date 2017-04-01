@@ -15,3 +15,5 @@
 //= require turbolinks
 //= require_tree .
 //= require filterrific/filterrific-jquery
+//= require semantic_ui/semantic_ui
+//= semantic
