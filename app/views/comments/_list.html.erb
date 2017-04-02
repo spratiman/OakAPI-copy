@@ -15,11 +15,10 @@
         <%= link_to 'Reply', course_comment_path(@course, comment), class: 'reply' %>
       </div>
     </div>
+    <% if comment.has_children? %>
+      <div class="ui comments">
+        <%= render 'comments/list', comments: comment.children %>
+      </div>
+    <% end %>
   </div>
-  <% if comment.has_children? %>
-    <%= comment.children.inspect %>
-    <div class="ui comments">
-      <% #render 'comments/list', comments: comment.children %>
-    </div>
-  <% end %>
 <% end %>
