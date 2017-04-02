@@ -1,19 +1,21 @@
-
+<% if ! @comments %>
+  <% @comments = Comment.where({course_id: @course.id, ancestry: nil}) %>
+<% end %>
 <div class="img-with-text row middle">
   <%= image_tag("comments.png", :class => "img-with-text__img") %>
   <h2 class="img-with-text__text">Comments</h2>
 </div>
 
 <div class="comment-count">
-  <span class="comment-count__number"><%= @course.comments.count %></span>
-  <span class="comment-count__label"><%= (@course.comments.count == 1 ? "Comment" : "Comments") %></span>
+  <span class="comment-count__number"><%= @comments.count %></span>
+  <span class="comment-count__label"><%= (@comments.count == 1 ? "Comment" : "Comments") %></span>
 </div>
 
 <div class="ui threaded comments">
-  
-  <%= render 'comments/list', comments: @course.comments %>
 
-  <%= form_for([@course, @course.comments.build], html: {class: "ui reply form"}) do |f| %>
+  <%= render 'comments/list', comments: @comments %>
+
+  <%= form_for([@course, @comments.build], html: {class: "ui reply form"}) do |f| %>
       <div class="field">
         <%= f.text_area(:body) %>
       </div>

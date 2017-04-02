@@ -45,6 +45,15 @@ class CommentsController < ApplicationController
 
   def index
     @course = Course.find(params[:course_id])
-    @comments = Comment.where({course_id: :course_id})
+    @comments = Comment.where({course_id: params[:course_id], ancestry: nil})
+  end
+
+  def reply
+    @course = Course.find(params[:course_id])
+	  @parent_comment = Comment.find(params[:comment_id])
+    @comment = @parent_comment.children.create(course_id: params[:course_id],
+                    body: params[:comment][:body], user_id: current_user.id)
+    @comment.save
+    redirect_to course_path(@course)
   end
 end
