@@ -18,7 +18,9 @@ Rails.application.routes.draw do
     get 'add'
     get 'delete'
     resources :user_course_relations
-    resources :comments
+    resources :comments do
+      post 'reply'
+    end
     resources :ratings
   end
 
