@@ -1,20 +1,9 @@
 .navigation-bar {
 
 	@include m('main') {
-		background-color: #21335E;
-		border-bottom-style: solid;
-		border-bottom-width: 1px;
-		border-bottom-color: lighten(#21335E, 10%);
-		margin-bottom: $line-height;
-		padding-top: 20px;
-		padding-bottom: 20px;
-
-		a {
-			color: white;
-			text-decoration: none;
-			vertical-align: middle;
-		}
-
+		padding-top: 1.0em;
+		padding-bottom: 1.0em;
+		background-color: #1c2c52;
 	}
 
 	@include m('footer') {

@@ -1,0 +1,24 @@
+<% comments.each do |comment| %>
+  <div class="comment">
+    <a class="avatar">
+      <%= gravatar_for comment.user %>
+    </a>
+    <div class="content">
+      <a class="author"><%= comment.user.first_name %> <%= comment.user.last_name %></a>
+      <div class="metadata">
+        <span class="date"><%= comment.updated_at.to_formatted_s(:short) %></span>
+      </div>
+      <div class="text">
+        <%= comment.body %>
+      </div>
+      <div class="actions">
+        <%= link_to 'Reply', course_comment_path(@course, comment), class: 'reply' %>
+      </div>
+    </div>
+    <% if comment.has_children? %>
+      <div class="ui comments">
+        <%= render 'comments/list', comments: comment.children %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

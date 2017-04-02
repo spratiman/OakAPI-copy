@@ -1,47 +1,51 @@
 <% provide(:title, "Sign Up") %>
 <section class="masthead pattern-back">
-  <div class="container">
-    <div class="row center">
-      <div class="col-10 col-md-8 col-lg-4">
-        <h1 class="text-center">Sign Up</h1>
-        <br>
-        <%= devise_error_messages! %>
-        <br>
-        <div class="login-form">
-          <%= link_to "Use your Facebook Account", user_facebook_omniauth_authorize_path, :class => 'btn btn--fill btn--facebook' %>
-          <span class="text-divider">OR</span>
-          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-
+  <div class="ui center aligned middle aligned grid container">
+    <div class="eight wide column">
+      <h1 class="text-center">Sign Up</h1>
+      <br>
+      <%= devise_error_messages! %>
+      <br>
+      <div class="login-form">
+        <a href="<%= user_facebook_omniauth_authorize_path %>"" class="fluid ui facebook button">
+          <i class="facebook icon"></i>
+          Use your Facebook Account
+        </a>
+        <h4 class="ui horizontal divider header">OR</h4>
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name), :html => {:class => 'ui form'}) do |f| %>
+      
+          <div class="two fields">
             <div class="field">
               <%= f.label :first_name, :class => 'login-form__label' %>
               <%= f.text_field :first_name, autofocus: true, :class => 'login-form__input' %>
             </div>
-
+            
             <div class="field">
               <%= f.label :last_name, :class => 'login-form__label' %>
               <%= f.text_field :last_name, autofocus: true, :class => 'login-form__input' %>
             </div>
-
+          </div>
+      
+          <div class="field">
+            <%= f.label :email, :class => 'login-form__label' %>
+            <%= f.email_field :email, autofocus: true, :class => 'login-form__input' %>
+          </div>
+      
+          <div class="two fields">
             <div class="field">
               <%= f.label :username, :class => 'login-form__label' %>
               <%= f.text_field :username, autofocus: true, :class => 'login-form__input' %>
             </div>
-
+            
             <div class="field">
               <%= f.label :birthdate, :class => 'login-form__label' %>
               <%= f.date_field :birthdate, autofocus: true, :class => 'login-form__input' %>
             </div>
-            
-            <div class="field">
-              <%= f.label :email, :class => 'login-form__label' %>
-              <%= f.email_field :email, autofocus: true, :class => 'login-form__input' %>
-            </div>
-            
+          </div>
+          
+          <div class="two fields">
             <div class="field">
               <%= f.label :password, :class => 'login-form__label' %>
-              <% if @minimum_password_length %>
-              <em class="small">(<%= @minimum_password_length %> characters minimum)</em>
-              <% end %>
               <%= f.password_field :password, autocomplete: "off", :class => 'login-form__input' %>
             </div>
             
@@ -49,10 +53,10 @@
               <%= f.label :password_confirmation, :class => 'login-form__label' %>
               <%= f.password_field :password_confirmation, autocomplete: "off", :class => 'login-form__input' %>
             </div>
-            
-            <%= f.submit "Sign up", :class => 'btn btn--fill btn--primary' %>
-          <% end %>
-        </div>
+          </div>
+          
+          <%= f.submit "Sign up", :class => 'fluid ui primary button' %>
+        <% end %>
       </div>
     </div>
   </div>

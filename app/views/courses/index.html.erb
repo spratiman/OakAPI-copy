@@ -1,40 +1,31 @@
 <% provide(:title, "Explore Courses") %>
-<div class="container">
-<h1>Explore Courses</h1>
 
-<%#
-  Filterrific adds the `form_for_filterrific` view helper:
-  * adds dom id 'filterrific_filter'
-  * applies javascript behaviors:
-      * AJAX form submission on change
-      * AJAX spinner while AJAX request is being processed
-  * sets form_for options like :url, :method and input name prefix
-%>
+<section class="search-parameters">
+  <div class="ui container">
+    <h1>Explore Courses</h1>
+  
+    <%= form_for_filterrific(@filterrific, :html => {:class => 'ui form'}) do |f| %>
+      <div class="ui fluid action input">
+        <%= f.text_field(
+          :search_query,
+          class: 'filterrific-periodically-observed',
+          placeholder: 'Enter Course Name or Code'
+        ) %>
+        <%= f.select(:sorted_by, @filterrific.select_options[:sorted_by], {}, {:class => 'ui compact selection dropdown'}) %>
+        <%= link_to('Reset filters', reset_filterrific_url, :class => 'ui button') %>
+      </div>
+    <% end %>
+  </div>
+</section>
 
-<%= form_for_filterrific @filterrific do |f| %>
-  <div class="">
-    <%= f.text_field(
-      :search_query,
-      class: 'filterrific-periodically-observed text-input text-input--fill text-input--large',
-      placeholder: 'Enter Course Name or Code'
+<section class="search-results">
+  <div class="ui container">
+    <h2 class="ui header">Search Results</h2>
+    <%# add an automated spinner to your form when the list is refreshed %>
+    <%= render_filterrific_spinner %>
+    <%= render(
+      partial: 'courses/list',
+      locals: { courses: @courses }
     ) %>
   </div>
-  <div>
-    Sorted by
-    <%= f.select(:sorted_by, @filterrific.select_options[:sorted_by]) %>
-    <%= link_to(
-      'Reset filters',
-      reset_filterrific_url,
-    ) %>
-  </div>
-<% end %>
-
-<h2>Search Results</h2>
-<%# add an automated spinner to your form when the list is refreshed %>
-<%= render_filterrific_spinner %>
-<%= render(
-  partial: 'courses/list',
-  locals: { courses: @courses }
-) %>
-
-</div>
+</section>

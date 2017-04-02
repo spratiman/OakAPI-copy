@@ -1,0 +1,16 @@
+<div class="ui inverted statistic">
+  <div class="value"><%= @course.ratings.overall.average(:value) %></div>
+  <div class="label">Overall</div>
+</div>
+<div class="ui inverted statistic">
+  <div class="value"><%= @course.ratings.usefulness.average(:value) %></div>
+  <div class="label">Usefulness</div>
+</div>
+<div class="ui inverted statistic">
+  <div class="value"><%= @course.ratings.difficulty.average(:value) %></div>
+  <div class="label">Difficulty</div>
+</div>
+<div class="ui inverted statistic">
+  <div class="value"><%= @course.ratings.courseload.average(:value) %></div>
+  <div class="label">Course Load</div>
+</div>

@@ -1,18 +1,26 @@
-<header class="navigation-bar navigation-bar--main site-header">
-	<div class="container">
-		<%= link_to(:root, class:"navigation-bar__logo") do %>
-			<%= image_tag "logo.png" %>
-		<% end %>
-		<nav class="navigation-bar__nav navigation-bar__nav--main">
-			<ul class="inline-list">
-				<li class="inline-list__item"><%= link_to "Explore", courses_path %></li>
-				<% if user_signed_in? %>
-					<!-- Put profile code here -->
-				<% else %>
-				<li class="inline-list__item"><%= link_to "Sign up", new_user_registration_path %></li>
-				<% end -%>
-			</ul>
-		</nav>
-	</div>
+<header class="navigation-bar navigation-bar--main">
+  <div class="ui secondary inverted menu">
+    <nav class="ui container">
+      <%= link_to(:root, class:"item logo") do %>
+        <%= image_tag "logo.png" %>
+      <% end %>
+      <div class="right menu">
+        <%= link_to("Explore", courses_path, :class => 'item') %>
+        <% if user_signed_in? %>
+            <div class="ui dropdown item">
+              <%= gravatar_for current_user, class: "ui avatar image" %>
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <div class="header">Signed in as <%= current_user.first_name %> <%= current_user.last_name %></div>
+                <div class="divider"></div>
+                <%= link_to 'Edit profile', edit_user_registration_path, :class => 'item' %>
+                <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'item' %>
+              </div>
+            </div>
+        <% else %>
+          <%= link_to("Sign up", new_user_registration_path, :class => 'item') %>
+        <% end -%>
+      </div>
+    </nav>
+  </div>
 </header>
-<div class="site-header-spacer"></div>
