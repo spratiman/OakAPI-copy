@@ -1,7 +1,7 @@
 class Api::V1::CommentsController < ApplicationController
-	before_action :authenticate_user!
+  before_action :authenticate_user!
 
-	# GET /courses/:course_id/comments
+  # GET /courses/:course_id/comments
   def index
     @course = Course.find(params[:course_id])
     @comments = @course.comments

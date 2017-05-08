@@ -3,8 +3,8 @@ require 'test_helper'
 class RatingsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
-  	@rating = ratings(:one)
-  	@course = courses(:csc373)
+    @rating = ratings(:one)
+    @course = courses(:csc373)
     @user = users(:richard)
     @user.save!
     @auth_headers = @user.create_new_auth_token
