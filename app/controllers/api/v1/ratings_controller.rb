@@ -1,7 +1,7 @@
 class Api::V1::RatingsController < ApplicationController
-	before_action :authenticate_user!
+  before_action :authenticate_user!
 
-	# GET /courses/:course_id/ratings
+  # GET /courses/:course_id/ratings
   def index
     @course = Course.find(params[:course_id])
     @ratings = @course.ratings

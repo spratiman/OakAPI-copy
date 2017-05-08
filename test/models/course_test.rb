@@ -6,13 +6,13 @@ class CourseTest < ActiveSupport::TestCase
   # end
 
   test "should_not_allow_course_same_codes" do
-  	course = Course.new(code: 'csc373')
-  	assert_not course.save
+    course = Course.new(code: 'csc373')
+    assert_not course.save
   end
 
   test "should_not_add_course_without_code" do
-  	course = Course.new
-  	assert_not course.save
+    course = Course.new
+    assert_not course.save
   end
 
   test "should_add_course_with_code" do
