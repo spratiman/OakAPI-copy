@@ -1,6 +1,6 @@
 class Api::V1::RatingsController < ApplicationController
-  before_action :authenticate_user!
-
+  before_action :authenticate_user!, :except => [:index, :show]
+  
   # GET /courses/:course_id/ratings
   def index
     @course = Course.find(params[:course_id])
@@ -14,4 +14,5 @@ class Api::V1::RatingsController < ApplicationController
     @user = @rating.user
   end
 
+  # before_action :authenticate_user!
 end

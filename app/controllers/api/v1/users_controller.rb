@@ -1,7 +1,7 @@
 class Api::V1::UsersController < ApplicationController
   before_action :authenticate_user!
 
-  # GET /courses
+  # GET /users
   def index
     @users = User.all
   end
