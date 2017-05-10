@@ -6,7 +6,7 @@ class Api::V1::CoursesController < ApplicationController
     @courses = Course.limit(10)
   end
 
-  # GET /courses/1
+  # GET /courses/:id
   def show
     @course = Course.find(params[:id])
   end
