@@ -6,7 +6,7 @@ class Api::V1::UsersController < ApplicationController
     @users = User.all
   end
 
-  # GET /users/1
+  # GET /users/:id
   def show
     @user = User.find(params[:id])
   end
