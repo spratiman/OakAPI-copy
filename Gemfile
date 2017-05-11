@@ -52,3 +52,6 @@ gem 'devise', git: 'https://github.com/gogovan/devise.git', branch: 'rails-5.1'
 gem 'erubis'
 gem 'omniauth-facebook'
 gem 'devise_token_auth'
+
+# Use ancestry to add hierarchical structure to models
+gem 'ancestry'
