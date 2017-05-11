@@ -1,9 +1,6 @@
 require 'test_helper'
 
 class RatingTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
   test "should_not_allow_multiple_ratings" do
     rating = Rating.new(user: users(:richard), course: courses(:csc373),
                         rating_type: "Overall")
