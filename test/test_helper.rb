@@ -9,9 +9,22 @@ class ActiveSupport::TestCase
   fixtures :all
 end
 
-class ActionDispatch::IntegrationTest
-  # Add a helper method that parses JSON strings into something we can use
+module RequestHelper
+  # Helper method that parses JSON strings into Hashes
   def json_response
     @json_response ||= JSON.parse(@response.body, symbolize_names: true)
   end
+end
+
+module AuthHelper
+  # Helper method that authenticates the given user
+  def add_auth_headers(headers, user)
+    auth_headers = user.create_new_auth_token
+    headers.merge!(auth_headers.slice("access-token", "client", "uid"))
+  end
+end
+
+class ActionDispatch::IntegrationTest
+  include RequestHelper
+  include AuthHelper
 end
