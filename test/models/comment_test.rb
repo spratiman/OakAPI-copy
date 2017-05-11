@@ -1,9 +1,6 @@
 require 'test_helper'
 
 class CommentTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
   test "should_allow_multiple_comments" do
     comment = Comment.new(user: users(:richard), course: courses(:csc373))
     assert comment.save

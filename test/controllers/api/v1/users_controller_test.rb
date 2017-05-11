@@ -3,9 +3,7 @@ require 'test_helper'
 class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:richard)
-    @user.save!
-    @auth_headers = @user.create_new_auth_token
-    @auth_headers.merge!({'Accept' => 'application/vnd.oak.v1'})
+    @headers = {'Accept' => 'application/vnd.oak.v1'}
   end
 
   teardown do
@@ -13,17 +11,20 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get users_url, headers: @auth_headers, as: :json
+    add_auth_headers(@headers, @user)
+    get users_url, headers: @headers
     assert_response :success
   end
 
   test "should show user" do
-    get user_url(@user), headers: @auth_headers, as: :json
+    add_auth_headers(@headers, @user)
+    get user_url(@user), headers: @headers
     assert_response :success
   end
 
   test "show should display user" do
-    get user_url(@user), headers: @auth_headers, as: :json
+    add_auth_headers(@headers, @user)
+    get user_url(@user), headers: @headers
     expected = @user.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
