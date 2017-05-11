@@ -1,10 +1,6 @@
 require 'test_helper'
 
 class CourseTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
-
   test "should_not_allow_course_same_codes" do
     course = Course.new(code: 'csc373')
     assert_not course.save
