@@ -78,5 +78,38 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
     actual = json_response[:data][:user_url]
     assert_equal expected, actual
   end
-  
+
+  ''' Testing for the ability to add ratings for courses that are valid
+
+  Make sure its only possible with authentication
+  '''
+
+  '''
+  Testing for the ability to add ratings for courses and making sure
+  it is successful (present in the database). 
+
+  Make sure its only possible with authentication.
+  '''
+
+  '''
+  Testing for the ability to add ratings for courses and make sure
+  they are assigned to proper course.
+
+  Make sure its only possible with authentication.
+  '''
+
+  '''
+  Testing for the ability to add ratings for courses and make sure
+  they are assigned to the correct user.
+
+  Make sure its only possible with authentication
+  '''
+
+  '''
+  Testing for the ability to modify ratings for courses and make
+  sure they are only done by the same user who created it.
+
+  Make sure its only possible with authentication (same user)
+  '''
+
 end
