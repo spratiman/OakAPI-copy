@@ -1,6 +1,11 @@
 require 'test_helper'
 
 class CommentTest < ActiveSupport::TestCase
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to create new comments.
+  # ----------------------------------------------------------------------
+
   test "should allow a comment on course" do
     comment = Comment.new(user: users(:dinesh), course: courses(:csc473))
     assert comment.save
@@ -21,12 +26,19 @@ class CommentTest < ActiveSupport::TestCase
     assert_not comment.save
   end
 
+  # ----------------------------------------------------------------------
+  # Testing for the ability to update existing comments.
+  # ----------------------------------------------------------------------
+
   test "should update body" do
     comment = comments(:one)
     comment.body = "Changed my mind after the results of first term went out..."
-    assert comment.valid?
-    # assert comment.save, "Did not update body of comment"
+    assert comment.save, "Did not update body of comment"
   end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to reply to comments in different scenarios.
+  # ----------------------------------------------------------------------
 
   test "should allow single reply by different user" do
     parent_comment = Comment.create!(
@@ -91,7 +103,7 @@ class CommentTest < ActiveSupport::TestCase
     assert_not reply.save, "Replied to comment with different course"
   end
 
-  test "should limit comment depth to 5" do
+  test "should limit reply depth to 5" do
     parent_comment = comments(:one)
     (1..5).each do |i|
       parent_comment = Comment.new(
@@ -109,5 +121,41 @@ class CommentTest < ActiveSupport::TestCase
       parent: parent_comment
     )
     assert_not reply.save, "Added reply of depth greater than 5"
+  end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to delete comments in different ancestry
+  # situations.
+  # ----------------------------------------------------------------------
+
+  test "destroy should delete comment, given root and no children" do
+    comment = comments(:one)
+    assert comment.destroy
+  end
+
+  test "destroy should decrease count, given root and no children" do
+    comment = comments(:one)
+    assert_difference 'Comment.count', -1 do
+      comment.destroy
+    end
+  end
+
+  test "destroy should delete comment, given leaf and not root" do
+    comment = comments(:three)
+    comment.destroy
+  end
+
+  test "destroy should decrease count, given leaf and not root" do
+    comment = comments(:three)
+    assert_difference 'Comment.count', -1 do
+      comment.destroy
+    end
+  end
+
+  test "destroy should raise error, given has children" do
+    comment = comments(:two)
+    assert_raises(AncestryException) do
+      comment.destroy
+    end
   end
 end
