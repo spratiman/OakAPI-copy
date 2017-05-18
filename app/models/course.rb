@@ -6,26 +6,39 @@ class Course < ApplicationRecord
   has_many :comments
   has_many :ratings
 
-  def self.update_db(code, title, description, prerequisites, exclusions, breadths)
+  def self.update_db(input)
     breadth_num_to_val = Hash[1 => "Creative and Cultural Representations",
       2 => "Thought, Belief, and Behaviour",
       3 => "Society and Its Institutions",
       4 => "Living Things and Their Environment",
       5 => "The Physical and Mathematical Universes"]
       breadth_string = ""
-      breadths.each do |breadth_num|
+      input["breadths"].each do |breadth_num|
         breadth_string << breadth_num_to_val[breadth_num] + ";"
       end
 
-      if Course.exists?(:code => code)
-        course = Course.where(code: code)
-        course.update(title: title, description: description,
-          prerequisites: prerequisites, exclusions: exclusions,
-          breadths: breadth_string)
+      if Course.exists?(:code => input["code"])
+        course = Course.where(code: input["code"])
+        course.update(title:          input["name"],
+                      description:    input["description"],
+                      prerequisites:  input["prerequisites"],
+                      exclusions:     input["exclusions"],
+                      breadths:       breadth_string,
+                      department:     input["department"],
+                      division:       input["division"],
+                      level:          input["level"],
+                      campus:         input["campus"])
       else
-        course = Course.new(code: code, title: title, description: description,
-          prerequisites: prerequisites, exclusions: exclusions,
-          breadths: breadth_string)
+        course = Course.new(code:           input["code"],
+                            title:          input["name"],
+                            description:    input["description"],
+                            prerequisites:  input["prerequisites"],
+                            exclusions:     input["exclusions"],
+                            breadths:       breadth_string,
+                            department:     input["department"],
+                            division:       input["division"],
+                            level:          input["level"],
+                            campus:         input["campus"])
         course.save
       end
     end
