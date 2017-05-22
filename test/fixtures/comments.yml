@@ -1,6 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  body: Awesomeeeeeee, changed my life forever. 
+  body: Awesomeeeeeee, changed my life forever.
   user: richard
   course: csc373
