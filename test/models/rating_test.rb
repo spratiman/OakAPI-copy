@@ -3,7 +3,7 @@ require 'test_helper'
 class RatingTest < ActiveSupport::TestCase
   test "should_not_allow_multiple_ratings" do
     rating = Rating.new(user: users(:richard), course: courses(:csc373),
-                        rating_type: "Overall", value: true)
+                        rating_type: "overall", value: true)
     assert_raises(ActiveRecord::RecordNotUnique) do
       rating.save
     end

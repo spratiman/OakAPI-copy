@@ -4,4 +4,4 @@ one:
   value: true
   user: richard
   course: csc373
-  rating_type: Overall
+  rating_type: overall

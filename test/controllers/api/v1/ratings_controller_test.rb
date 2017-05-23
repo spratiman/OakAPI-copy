@@ -95,13 +95,13 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # course and user
   # ----------------------------------------------------------------------
   test "should not add rating without auth" do
-    post course_ratings_url(@course), headers: @headers, params: {'value': true, 'rating_type': 'Overall'}
+    post course_ratings_url(@course), headers: @headers, params: {'value': true, 'rating_type': 'overall'}
     assert_response 401
   end
 
   test "should add rating with auth" do
     add_auth_headers(@headers, @user_two)
-    post course_ratings_url(@course), headers: @headers, params: {'value': true, 'rating_type': 'Overall'}
+    post course_ratings_url(@course), headers: @headers, params: {'value': true, 'rating_type': 'overall'}
     assert_equal true, json_response[:value]
     assert_equal @user_two.id, json_response[:user_id]
     assert_equal @course.id, json_response[:course_id]
