@@ -23,7 +23,7 @@ class Api::V1::CommentsController < ApplicationController
     if @comment.save
       render json: @comment, status: 201
     else
-      render json: { errors: @comment.errors }, status: 422
+      render json: { errors: @comment.errors }, status: 400
     end
   end
 

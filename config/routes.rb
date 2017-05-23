@@ -11,7 +11,7 @@ Rails.application.routes.draw do
       resources :users, only: [:index, :show]
       resources :courses, only: [:index, :show] do
         resources :comments, only: [:index, :show, :create, :update]
-        resources :ratings, only: [:index, :show]
+        resources :ratings, only: [:index, :show, :create, :update]
       end
     end
   end
