@@ -4,6 +4,8 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @comment = comments(:one)
+    @comment_with_reply = comments(:two)
+    @reply = comments(:three)
     @course = courses(:csc373)
     @user = users(:richard)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
@@ -70,7 +72,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # user corresponds to it correctly with and without authentication
   # ----------------------------------------------------------------------
 
-  test "show should dispaly user url without auth" do
+  test "show should display user url without auth" do
     get course_comment_url(@course, @comment), headers: @headers
     expected = user_url(@user)
     actual = json_response[:data][:user_url]
@@ -84,5 +86,56 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
     actual = json_response[:data][:user_url]
     assert_equal expected, actual
   end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to view a single comment and making sure that
+  # the immediate replies to that comment are shown with and without 
+  # authentication
+  # ----------------------------------------------------------------------
   
+  test "show should display replies for comment with reply without auth" do
+    get course_comment_url(@course, @comment_with_reply), headers: @headers
+    expected = @comment_with_reply.children
+    actual = json_response[:data][:replies]
+    assert_equal expected, actual
+  end
+
+  test "show should display replies for comment with reply with auth" do
+    add_auth_headers(@headers, @user)
+    get course_comment_url(@course, @comment_with_reply), headers: @headers
+    expected = @comment_with_reply.children
+    actual = json_response[:data][:replies]
+    assert_equal expected, actual
+  end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to delete a single comment with and without 
+  # authentication
+  # ----------------------------------------------------------------------
+
+  test "destroy should fail when not authenticated" do
+    delete course_comment_url(@course, @comment), headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "destroy should fail when authenticated user not author" do
+    other_user = users(:dinesh)
+    add_auth_headers(@headers, other_user)
+    delete course_comment_url(@course, @comment), headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "destroy should fail when comment has replies" do
+    author = users(:dinesh)
+    add_auth_headers(@headers, author)
+    delete course_comment_url(@course, @comment_with_reply), headers: @headers
+    assert_response :unprocessable_entity
+  end
+
+  test "destroy should delete comment when it has no replies" do
+    add_auth_headers(@headers, @user)
+    delete course_comment_url(@course, @comment), headers: @headers
+    assert_response :ok
+  end
+
 end
