@@ -7,12 +7,12 @@ class CommentTest < ActiveSupport::TestCase
   # ----------------------------------------------------------------------
 
   test "should allow a comment on course" do
-    comment = Comment.new(user: users(:dinesh), course: courses(:csc473))
+    comment = Comment.new(body: "this is a comment", user: users(:dinesh), course: courses(:csc473))
     assert comment.save
   end
 
   test "should allow multiple comments" do
-    comment = Comment.new(user: users(:richard), course: courses(:csc373))
+    comment = Comment.new(body: "this is comment", user: users(:richard), course: courses(:csc373))
     assert comment.save
   end
 
@@ -154,7 +154,7 @@ class CommentTest < ActiveSupport::TestCase
 
   test "destroy should raise error, given has children" do
     comment = comments(:two)
-    assert_raises(AncestryException) do
+    assert_raises(Ancestry::AncestryException) do
       comment.destroy
     end
   end
