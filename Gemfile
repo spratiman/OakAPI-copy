@@ -54,4 +54,4 @@ gem 'omniauth-facebook'
 gem 'devise_token_auth'
 
 # Use ancestry to add hierarchical structure to models
-gem 'ancestry'
+gem 'ancestry', '~> 3.0.0'
