@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   # Validations
+  validates :body, :user, :course, presence: true
   validate :depth_cannot_be_greater_than_five
   validate :course_is_not_different_from_parent_course
   # Associations
