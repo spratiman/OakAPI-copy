@@ -35,13 +35,13 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "should get show without auth" do
-    get course_rating_url(@course, @rating), headers: @headers
+    get rating_url(@rating), headers: @headers
     assert_response :success
   end
 
   test "should get show" do
     add_auth_headers(@headers, @user)
-    get course_rating_url(@course, @rating), headers: @headers
+    get rating_url(@rating), headers: @headers
     assert_response :success
   end
 
@@ -51,7 +51,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "show should display rating without auth" do
-    get course_rating_url(@course, @rating), headers: @headers
+    get rating_url(@rating), headers: @headers
     expected = @rating.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
@@ -59,7 +59,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
 
   test "show should display rating" do
     add_auth_headers(@headers, @user)
-    get course_rating_url(@course, @rating), headers: @headers
+    get rating_url(@rating), headers: @headers
     expected = @rating.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
@@ -72,7 +72,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "should should display user url without auth" do
-    get course_rating_url(@course, @rating), headers: @headers
+    get rating_url(@rating), headers: @headers
     expected = user_url(@user, format: :json)
     actual = json_response[:data][:user_url]
     assert_equal expected, actual
@@ -80,7 +80,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
 
   test "should should display user url" do
     add_auth_headers(@headers, @user)
-    get course_rating_url(@course, @rating), headers: @headers
+    get rating_url(@rating), headers: @headers
     expected = user_url(@user, format: :json)
     actual = json_response[:data][:user_url]
     assert_equal expected, actual

@@ -8,6 +8,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
     @reply = comments(:three)
     @course = courses(:csc373)
     @user = users(:richard)
+    @user2 = users(:dinesh)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
   end
 
@@ -37,13 +38,13 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "should get show without auth" do
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     assert_response :success
   end
 
   test "should get show with auth" do
     add_auth_headers(@headers, @user)
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     assert_response :success
   end
 
@@ -53,7 +54,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "show should display comment without auth" do
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = @comment.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
@@ -61,7 +62,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "show should display comment with auth" do
     add_auth_headers(@headers, @user)
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = @comment.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
@@ -73,7 +74,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "show should display user url without auth" do
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = user_url(@user)
     actual = json_response[:data][:user_url]
     assert_equal expected, actual
@@ -81,7 +82,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "show should display user url with auth" do
     add_auth_headers(@headers, @user)
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = user_url(@user)
     actual = json_response[:data][:user_url]
     assert_equal expected, actual
@@ -94,17 +95,17 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
   
   test "show should display replies for comment with reply without auth" do
-    get course_comment_url(@course, @comment_with_reply), headers: @headers
-    expected = @comment_with_reply.children
-    actual = json_response[:data][:replies]
+    get comment_url(@comment_with_reply), headers: @headers
+    expected = @comment_with_reply.children[0][:id]
+    actual = json_response[:data][:replies][0][:id]
     assert_equal expected, actual
   end
 
   test "show should display replies for comment with reply with auth" do
     add_auth_headers(@headers, @user)
-    get course_comment_url(@course, @comment_with_reply), headers: @headers
-    expected = @comment_with_reply.children
-    actual = json_response[:data][:replies]
+    get comment_url(@comment_with_reply), headers: @headers
+    expected = @comment_with_reply.children[0][:id]
+    actual = json_response[:data][:replies][0][:id]
     assert_equal expected, actual
   end
 
@@ -114,28 +115,56 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "destroy should fail when not authenticated" do
-    delete course_comment_url(@course, @comment), headers: @headers
+    delete comment_url(@comment), headers: @headers
     assert_response :unauthorized
   end
 
   test "destroy should fail when authenticated user not author" do
     other_user = users(:dinesh)
     add_auth_headers(@headers, other_user)
-    delete course_comment_url(@course, @comment), headers: @headers
+    delete comment_url(@comment), headers: @headers
     assert_response :unauthorized
   end
 
   test "destroy should fail when comment has replies" do
     author = users(:dinesh)
     add_auth_headers(@headers, author)
-    delete course_comment_url(@course, @comment_with_reply), headers: @headers
+    delete comment_url(@comment_with_reply), headers: @headers
     assert_response :unprocessable_entity
   end
 
   test "destroy should delete comment when it has no replies" do
     add_auth_headers(@headers, @user)
-    delete course_comment_url(@course, @comment), headers: @headers
+    delete comment_url(@comment), headers: @headers
+    assert_response :no_content
+  end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to update a single comment with and without
+  # authentication
+  # ----------------------------------------------------------------------
+
+  test "update should fail when user not authenticated" do
+    patch comment_url(@comment), params: {body: "This comment is updated."}, headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "update should fail when authenticated user not author" do
+    other_user = users(:dinesh)
+    add_auth_headers(@headers, other_user)
+    patch comment_url(@comment), params: {body: "This comment is updated."}, headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "update should update body when authenticated user is author" do
+    add_auth_headers(@headers, @user)
+    patch comment_url(@comment), params: {body: "This comment is updated."}, headers: @headers
     assert_response :ok
   end
 
+  test "update should fail comment has replies" do
+    add_auth_headers(@headers, @user2)
+    patch comment_url(@comment_with_reply), params: {body: "This comment is updated."}, headers: @headers
+    assert_response :unprocessable_entity
+  end
 end
