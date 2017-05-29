@@ -7,10 +7,10 @@ class Api::V1::RatingsController < ApplicationController
     @ratings = @course.ratings
   end
 
-  # GET /courses/:course_id/ratings/:rating_id
+  # GET /ratings/:id
   def show
-    @course = Course.find(params[:course_id])
-    @rating = @course.ratings.find(params[:id])
+    @rating = Rating.find(params[:id])
+    @course = @rating.course
     @user = @rating.user
   end
 
