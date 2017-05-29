@@ -36,6 +36,20 @@ class CommentTest < ActiveSupport::TestCase
     assert comment.save, "Did not update body of comment"
   end
 
+  test "should not allow update course" do
+    comment = comments(:one)
+    new_course = courses(:csc473)
+    comment.course = new_course
+    assert_not comment.save
+  end
+
+  test "should not allow update user" do
+    comment = comments(:one)
+    new_user = courses(:dinesh)
+    comment.user = new_user
+    assert_not comment.save
+  end
+
   # ----------------------------------------------------------------------
   # Testing for the ability to reply to comments in different scenarios.
   # ----------------------------------------------------------------------
