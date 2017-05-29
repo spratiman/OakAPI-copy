@@ -17,7 +17,7 @@ class Comment < ApplicationRecord
   end
 
   def course_is_not_different_from_parent_course
-    if !self.is_root? && self.course.id != self.parent.course.id
+    if !self.is_root? && self.course != self.parent.course
       errors.add(:course, "cannot be different from parent comment course")
     end
   end
