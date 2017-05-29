@@ -1,2 +1,3 @@
 json.extract! comment, :id, :body
-json.url course_comment_url(@course, comment, format: :json)
+json.num_replies comment.children.length
+json.url comment_url(comment, format: :json)
