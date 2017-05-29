@@ -91,12 +91,14 @@ The API exposes the following RESTful endpoints:
 | GET       | /courses/:id              | Show a course            |
 | GET       | /courses/:id/comments     | List all course comments |
 | POST      | /courses/:id/comments     | Add a course comment     |
-| GET       | /courses/:id/comments/:id | Show a course comment    |
-| PUT       | /courses/:id/comments/:id | Update a course comment  |
+| GET       | /comments/:id             | Show a course comment    |
+| PUT       | /comments/:id             | Update a course comment  |
+| DELETE    | /comments/:id             | Delete a course comment  |
+| POST      | /comments/:id/reply       | Reply to a comment       |
 | GET       | /courses/:id/ratings      | List all course ratings  |
 | POST      | /courses/:id/ratings      | Add a course rating      |
-| GET       | /courses/:id/ratings/:id  | Show a course rating     |
-| PUT       | /courses/:id/ratings/:id  | Update a course rating   |
+| GET       | /ratings/:id              | Show a course rating     |
+| PUT       | /ratings/:id              | Update a course rating   |
 
 ## Support
 
