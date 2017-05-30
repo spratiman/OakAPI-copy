@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170511231948) do
+ActiveRecord::Schema.define(version: 20170518134257) do
 
   create_table "comments", force: :cascade do |t|
     t.text "body", default: "", null: false
@@ -33,6 +33,10 @@ ActiveRecord::Schema.define(version: 20170511231948) do
     t.text "breadths"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "department"
+    t.string "division"
+    t.integer "level"
+    t.string "campus"
     t.index ["code"], name: "index_courses_on_code", unique: true
   end
 
