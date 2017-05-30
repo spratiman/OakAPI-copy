@@ -33,7 +33,7 @@ class Api::V1::RatingsController < ApplicationController
     @rating = @course.ratings.find(params[:id])
 
     if @rating.user == current_user
-      if @rating.update_attributes(params.permit(:value))
+      if @rating.update_attributes(params.permit(:value, :rating_type))
         render json: @rating, status: 201
       else
         render json: { errors: @rating.errors }, status: 400

@@ -95,14 +95,14 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # course and user
   # ----------------------------------------------------------------------
   test "should not add rating without auth" do
-    post course_ratings_url(@course), headers: @headers, params: {'value': true, 'rating_type': 'overall'}
+    post course_ratings_url(@course), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
     assert_response 401
   end
 
-  test "should add rating with auth" do
+  test "should add rating with auth and make sure we cannot add another rating" do
     add_auth_headers(@headers, @user_two)
-    post course_ratings_url(@course), headers: @headers, params: {'value': true, 'rating_type': 'overall'}
-    assert_equal true, json_response[:value]
+    post course_ratings_url(@course), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
+    assert_equal 1, json_response[:value]
     assert_equal @user_two.id, json_response[:user_id]
     assert_equal @course.id, json_response[:course_id]
     assert_response :success
@@ -116,21 +116,21 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
   test "ability to modify rating with different user" do
     add_auth_headers(@headers, @user_two)
-    put course_rating_url(@course, @rating), headers: @headers, params: {'value': false}
+    put course_rating_url(@course, @rating), headers: @headers, params: {'value': 0}
     assert_response 401
   end
 
   test "ability to modify rating with the creator" do
     add_auth_headers(@headers, @user)
-    put course_rating_url(@course, @rating), headers: @headers, params: {'value': false}
+    put course_rating_url(@course, @rating), headers: @headers, params: {'value': 0}
     assert_response :success
 
-    assert_equal false, json_response[:value]
+    assert_equal 0, json_response[:value]
   end
 
-  test "ability to modify rating to nothing with the creator" do
+  test "ability to modify rating to not 0 or 1 with the creator" do
     add_auth_headers(@headers, @user)
-    put course_rating_url(@course, @rating), headers: @headers, params: {'value': nil}
+    put course_rating_url(@course, @rating), headers: @headers, params: {'value': 3}
     assert_response 400
   end
 end
