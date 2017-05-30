@@ -99,7 +99,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
     assert_response 401
   end
 
-  test "should add rating with auth and make sure we cannot add another rating" do
+  test "should add rating with auth" do
     add_auth_headers(@headers, @user_two)
     post course_ratings_url(@course), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
     assert_equal 1, json_response[:value]
