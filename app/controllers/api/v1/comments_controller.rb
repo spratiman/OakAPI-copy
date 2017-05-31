@@ -3,16 +3,15 @@ class Api::V1::CommentsController < ApplicationController
 
   # GET /courses/:course_id/comments
   def index
-    @course = Course.find(params[:course_id])
-    @comments = @course.comments
+    course = Course.find(params[:course_id])
+    @comments = course.comments
   end
 
   # POST /courses/:course_id/comments
   def create
-    @course = Course.find(params[:course_id])
-    @comment = @course.comments.new(params.permit(:body))
-    @user = current_user
-    @comment.user = @user
+    course = Course.find(params[:course_id])
+    @comment = course.comments.new(comment_params)
+    @comment.user = current_user
 
     if @comment.save
       render "api/v1/comments/show", status: :created
@@ -24,50 +23,36 @@ class Api::V1::CommentsController < ApplicationController
   # GET /comments/:id
   def show
     @comment = Comment.find(params[:id])
-    @course = @comment.course
-    @user = @comment.user
   end
 
   # PUT /comments/:id
   def update
     @comment = Comment.find(params[:id])
-    @course = @comment.course
-    @user = @comment.user
+    
+    (verify_user and verify_no_replies) or return    
 
-    if @comment.user == current_user
-      if @comment.has_children?
-        render json: { errors: 'You cannot edit this comment since it has replies' }, status: :unprocessable_entity
-      elsif @comment.update_attributes(params.permit(:body))
-        render "api/v1/comments/show", status: :ok
-      else
-        render json: { errors: 'You cannot edit this comment to have a empty body' }, status: :bad_request
-      end
+    if @comment.update_attributes(comment_params)
+      render "api/v1/comments/show", status: :ok
     else
-      render json: { errors: 'You cannot edit this comment' }, status: :unauthorized
+      error_msg = { errors: 'You cannot edit this comment to have a empty body' }
+      render json: error_msg, status: :bad_request
     end
   end
 
   # DELETE /comments/:id
   def destroy
     @comment = Comment.find(params[:id])
-    if @comment.user == current_user
-      begin
-        @comment.destroy
-        head :no_content
-      rescue Ancestry::AncestryException => exc
-        render json: { errors: 'You cannot delete this comment since it has replies' }, status: :unprocessable_entity
-      end
-    else
-      render json: { errors: 'You cannot delete this comment' }, status: :unauthorized
-    end
+
+    (verify_user and verify_no_replies) or return
+
+    @comment.destroy
+    head :no_content
   end
 
   # POST /comments/:id/reply
   def reply
     parent_comment = Comment.find(params[:id])
-    @course = parent_comment.course
-    @user = current_user
-    @comment = Comment.new(body: params[:body], user: @user, course: @course, parent: parent_comment)
+    @comment = Comment.new(body: params[:body], user: current_user, course: parent_comment.course, parent: parent_comment)
 
     if @comment.save
       render "api/v1/comments/show", status: :created
@@ -75,5 +60,28 @@ class Api::V1::CommentsController < ApplicationController
       render json: { errors: @comment.errors }, status: :bad_request
     end
   end
-  
+
+  private
+
+  def comment_params
+    params.permit(:body)
+  end
+
+  def verify_user
+    if @comment.user != current_user
+      error_msg = { errors: 'You are not the author of this comment' }
+      render json: error_msg, status: :unauthorized and return
+    end
+
+    return true
+  end
+
+  def verify_no_replies
+    if @comment.has_children?
+      error_msg = { errors: 'You cannot edit this comment since it has replies' }
+      render json: error_msg, status: :unprocessable_entity and return
+    end
+
+    return true
+  end
 end

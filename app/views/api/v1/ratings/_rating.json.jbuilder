@@ -1,2 +1,2 @@
 json.extract! rating, :id, :rating_type, :value
-json.url rating_url(@course, rating, format: :json)
+json.url rating_url(rating, format: :json)

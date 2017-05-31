@@ -3,27 +3,25 @@ class Api::V1::RatingsController < ApplicationController
 
   # GET /courses/:course_id/ratings
   def index
-    @course = Course.find(params[:course_id])
-    @ratings = @course.ratings
+    course = Course.find(params[:course_id])
+    @ratings = course.ratings
   end
 
   # GET /ratings/:id
   def show
     @rating = Rating.find(params[:id])
-    @course = @rating.course
-    @user = @rating.user
   end
 
   # POST /courses/:course_id/ratings
   def create
-    @course = Course.find(params[:course_id])
-    @rating = @course.ratings.new(params.permit(:value, :rating_type))
+    course = Course.find(params[:course_id])
+    @rating = course.ratings.new(params.permit(:value, :rating_type))
     @rating.user = current_user
 
     if @rating.save
-      render json: @rating, status: 201
+      render json: @rating, status: :created
     else
-      render json: { errors: @rating.errors }, status: 400
+      render json: { errors: @rating.errors }, status: :bad_request
     end
   end
 
@@ -31,14 +29,23 @@ class Api::V1::RatingsController < ApplicationController
   def update
     @rating = Rating.find(params[:id])
 
-    if @rating.user == current_user
-      if @rating.update_attributes(params.permit(:value, :rating_type))
-        render json: @rating, status: 201
-      else
-        render json: { errors: @rating.errors }, status: 400
-      end
+    verify_user or return
+
+    if @rating.update_attributes(params.permit(:value, :rating_type))
+      render json: @rating, status: :ok
     else
-      render json: { errors: 'You can not edit this rating' }, status: 401
+      render json: { errors: @rating.errors }, status: :bad_request
     end
+  end
+
+  private
+
+  def verify_user
+    if @rating.user != current_user
+      error_msg = { errors: 'You are not the author of this rating' }
+      render json: error_msg, status: :unauthorized and return
+    end
+
+    return true
   end
 end

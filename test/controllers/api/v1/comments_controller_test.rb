@@ -14,7 +14,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   teardown do
-    @course = nil
+    @comment = nil
   end
 
   # ----------------------------------------------------------------------

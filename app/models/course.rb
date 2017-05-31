@@ -2,11 +2,12 @@ class Course < ApplicationRecord
   # Validations
   validates :code, uniqueness: true, presence: true
   validates :title, presence: true
+  
   # Associations
   has_many :user_courses
   has_many :users, through: :user_courses
   has_many :comments, inverse_of: :course
-  has_many :ratings
+  has_many :ratings, inverse_of: :course
 
   def self.update_db(input)
     breadth_num_to_val = Hash[1 => "Creative and Cultural Representations",

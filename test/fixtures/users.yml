@@ -1,3 +1,5 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
 richard:
   uid: richardpiper
   name: Richard Hendrichs
