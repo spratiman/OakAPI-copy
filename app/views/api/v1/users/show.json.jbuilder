@@ -10,6 +10,6 @@ json.data do
   json.comments @user.comments do |comment|
     json.id comment.id
     json.body comment.body
-    json.url course_comment_url(comment, format: :json)
+    json.url comment_url(comment, format: :json)
   end
 end

@@ -1,7 +1,20 @@
 richard:
+  uid: richardpiper
   name: Richard Hendrichs
   email: richard@piedpiper.io
   encrypted_password: piedpiper123
+
+dinesh:
+  uid: dineshpiper
+  name: Dinesh Chugtai
+  email: dinesh@piedpiper.io
+  encrypted_password: gilfoylesux
+
+gilfoyle:
+  uid: gilfoylepiper
+  name: Bertram Gilfoyle
+  email: gilfoyle@piedpiper.io
+  encrypted_password: satanist666
 
 erlich:
   uid: 123

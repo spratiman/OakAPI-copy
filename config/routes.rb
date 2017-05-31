@@ -9,8 +9,10 @@ Rails.application.routes.draw do
               constraints: ApiConstraints.new(version: 1) do
       # We are going to list our resources here
       resources :users, only: [:index, :show]
-      resources :courses, only: [:index, :show] do
-        resources :comments, only: [:index, :show, :create, :update]
+      resources :courses, only: [:index, :show], shallow: true do
+        resources :comments, only: [:index, :show, :create, :update, :destroy] do
+          post 'reply', on: :member
+        end
         resources :ratings, only: [:index, :show, :create, :update]
       end
     end

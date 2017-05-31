@@ -1,9 +1,11 @@
 class Course < ApplicationRecord
+  # Validations
   validates :code, uniqueness: true, presence: true
   validates :title, presence: true
+  # Associations
   has_many :user_courses
   has_many :users, through: :user_courses
-  has_many :comments
+  has_many :comments, inverse_of: :course
   has_many :ratings
 
   def self.update_db(input)

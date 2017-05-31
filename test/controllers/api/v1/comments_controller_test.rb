@@ -4,8 +4,11 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @comment = comments(:one)
+    @comment_with_reply = comments(:two)
+    @reply = comments(:three)
     @course = courses(:csc373)
     @user = users(:richard)
+    @user2 = users(:dinesh)
     @user_two = users(:erlich)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
   end
@@ -36,13 +39,13 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "should get show without auth" do
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     assert_response :success
   end
 
   test "should get show with auth" do
     add_auth_headers(@headers, @user)
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     assert_response :success
   end
 
@@ -52,7 +55,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "show should display comment without auth" do
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = @comment.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
@@ -60,7 +63,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "show should display comment with auth" do
     add_auth_headers(@headers, @user)
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = @comment.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
@@ -72,7 +75,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "show should display user url without auth" do
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = user_url(@user)
     actual = json_response[:data][:user_url]
     assert_equal expected, actual
@@ -80,10 +83,90 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "show should display user url with auth" do
     add_auth_headers(@headers, @user)
-    get course_comment_url(@course, @comment), headers: @headers
+    get comment_url(@comment), headers: @headers
     expected = user_url(@user)
     actual = json_response[:data][:user_url]
     assert_equal expected, actual
+  end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to view a single comment and making sure that
+  # the immediate replies to that comment are shown with and without 
+  # authentication
+  # ----------------------------------------------------------------------
+  
+  test "show should display replies for comment with reply without auth" do
+    get comment_url(@comment_with_reply), headers: @headers
+    expected = @comment_with_reply.children[0][:id]
+    actual = json_response[:data][:replies][0][:id]
+    assert_equal expected, actual
+  end
+
+  test "show should display replies for comment with reply with auth" do
+    add_auth_headers(@headers, @user)
+    get comment_url(@comment_with_reply), headers: @headers
+    expected = @comment_with_reply.children[0][:id]
+    actual = json_response[:data][:replies][0][:id]
+    assert_equal expected, actual
+  end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to delete a single comment with and without 
+  # authentication
+  # ----------------------------------------------------------------------
+
+  test "destroy should fail when not authenticated" do
+    delete comment_url(@comment), headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "destroy should fail when authenticated user not author" do
+    other_user = users(:dinesh)
+    add_auth_headers(@headers, other_user)
+    delete comment_url(@comment), headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "destroy should fail when comment has replies" do
+    author = users(:dinesh)
+    add_auth_headers(@headers, author)
+    delete comment_url(@comment_with_reply), headers: @headers
+    assert_response :unprocessable_entity
+  end
+
+  test "destroy should delete comment when it has no replies" do
+    add_auth_headers(@headers, @user)
+    delete comment_url(@comment), headers: @headers
+    assert_response :no_content
+  end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to update a single comment with and without
+  # authentication
+  # ----------------------------------------------------------------------
+
+  test "update should fail when user not authenticated" do
+    patch comment_url(@comment), params: {body: "This comment is updated."}, headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "update should fail when authenticated user not author" do
+    other_user = users(:dinesh)
+    add_auth_headers(@headers, other_user)
+    patch comment_url(@comment), params: {body: "This comment is updated."}, headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "update should update body when authenticated user is author" do
+    add_auth_headers(@headers, @user)
+    patch comment_url(@comment), params: {body: "This comment is updated."}, headers: @headers
+    assert_response :ok
+  end
+
+  test "update should fail comment has replies" do
+    add_auth_headers(@headers, @user2)
+    patch comment_url(@comment_with_reply), params: {body: "This comment is updated."}, headers: @headers
+    assert_response :unprocessable_entity
   end
 
   # ----------------------------------------------------------------------
@@ -93,18 +176,18 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # After, adding the comment, make sure it is assigned to the proper
   # course and user
   # ----------------------------------------------------------------------
+
   test "should not add comment without auth" do
-    post course_comments_url(@course), headers: @headers, params: {'body': 'New comment without auth'}
+    post course_comments_url(@course, @comment), headers: @headers, params: {'body': 'New comment without auth'}
     assert_response 401
   end
 
   test "should add comment with auth" do
     add_auth_headers(@headers, @user)
-    post course_comments_url(@course), headers: @headers, params: {'body': 'New comment with auth'}
-    assert_equal 'New comment with auth', json_response[:body]
-    assert_equal @user.id, json_response[:user_id]
-    assert_equal @course.id, json_response[:course_id]
-    assert_response :success
+    post course_comments_url(@course, @comment), headers: @headers, params: {'body': 'New comment with auth'}
+    assert_equal 'New comment with auth', json_response[:data][:body]
+    assert_equal user_url(@user), json_response[:data][:user_url]
+    assert_response :created
   end
 
   # ----------------------------------------------------------------------
@@ -113,25 +196,26 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   #
   # Make sure we can't update the comment after to have a empty body
   # ----------------------------------------------------------------------
+
   test "ability to modify comment with different user" do
     add_auth_headers(@headers, @user_two)
-    put course_comment_url(@course, @comment), headers: @headers, params: {'body': 'Tried to change with wrong user'}
+    put comment_url(@comment), headers: @headers, params: {'body': 'Tried to change with wrong user'}
     assert_response 401
   end
 
   test "ability to modify comment with the creator" do
     add_auth_headers(@headers, @user)
-    put course_comment_url(@course, @comment), headers: @headers, params: {'body': 'Tried to change with right user'}
+    put comment_url(@comment), headers: @headers, params: {'body': 'Tried to change with right user'}
     assert_response :success
 
-    assert_equal 'Tried to change with right user', json_response[:body]
+    assert_equal 'Tried to change with right user', json_response[:data][:body]
   end
 
   test "ability to modify comment to empty body with the creator" do
     add_auth_headers(@headers, @user)
-    put course_comment_url(@course, @comment), headers: @headers, params: {'body': ''}
+    put comment_url(@comment), headers: @headers, params: {'body': ''}
     assert_response 400
 
-    assert_equal 'You can not edit this comment to have a empty body', json_response[:errors]
+    assert_equal 'You cannot edit this comment to have a empty body', json_response[:errors]
   end
 end

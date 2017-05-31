@@ -1,6 +1,20 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  body: Awesomeeeeeee, changed my life forever.
+  id: 1
+  body: Awesomeeeeeee, changed my life forever. 
   user: richard
   course: csc373
+
+two:
+  id: 2
+  body: I made vid-chat, and Gilfoyle can suck it.
+  user: dinesh
+  course: csc373
+
+three:
+  id: 3
+  body: Every day feels like I have died and gone to Hell
+  user: gilfoyle
+  course: csc373
+  ancestry: '2'

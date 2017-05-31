@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class RatingTest < ActiveSupport::TestCase
-  test "should_not_allow_multiple_ratings" do
+  test "should not allow multiple ratings" do
     rating = Rating.new(user: users(:richard), course: courses(:csc373),
                         rating_type: "overall", value: 1)
     assert_raises(ActiveRecord::RecordNotUnique) do
@@ -9,29 +9,24 @@ class RatingTest < ActiveSupport::TestCase
     end
   end
 
-  test "should_not_allow_ratings_without_rating" do
+  test "should not allow ratings without user" do
     rating = Rating.new(course: courses(:csc373), user: users(:richard))
     assert_not rating.save
   end
 
-  test "should_not_allow_ratings_without_user" do
-    rating = Rating.new(course: courses(:csc373))
-    assert_not rating.save
-  end
-
-  test "should_not_allow_ratings_without_course" do
+  test "should not allow ratings without course" do
     rating = Rating.new(user: users(:richard))
     assert_not rating.save
   end
 
-  test "should_not_allow_rating_without_proper_type" do
+  test "should not allow rating without proper type" do
     rating = Rating.new(course: courses(:csc373), user: users(:erlich), value: 1, rating_type: 'False')
     assert_not rating.save
   end
 
-  test "should_update_body" do
+  test "should update body" do
     rating = ratings(:one)
-    rating.value = false
+    rating.value = 0
     assert rating.save
   end
 end
