@@ -178,13 +178,13 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "should not add comment without auth" do
-    post course_comments_url(@course, @comment), headers: @headers, params: {'body': 'New comment without auth'}
+    post course_comments_url(@course), headers: @headers, params: {'body': 'New comment without auth'}
     assert_response 401
   end
 
   test "should add comment with auth" do
     add_auth_headers(@headers, @user)
-    post course_comments_url(@course, @comment), headers: @headers, params: {'body': 'New comment with auth'}
+    post course_comments_url(@course), headers: @headers, params: {'body': 'New comment with auth'}
     assert_equal 'New comment with auth', json_response[:data][:body]
     assert_equal user_url(@user), json_response[:data][:user_url]
     assert_response :created
