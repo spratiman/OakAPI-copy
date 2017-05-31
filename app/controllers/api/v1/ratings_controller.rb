@@ -27,10 +27,9 @@ class Api::V1::RatingsController < ApplicationController
     end
   end
 
-  # PUT /courses/:course_id/ratings/:rating_id
+  # PUT /ratings/:id
   def update
-    @course = Course.find(params[:course_id])
-    @rating = @course.ratings.find(params[:id])
+    @rating = Rating.find(params[:id])
 
     if @rating.user == current_user
       if @rating.update_attributes(params.permit(:value, :rating_type))

@@ -116,13 +116,13 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
   test "ability to modify rating with different user" do
     add_auth_headers(@headers, @user_two)
-    put course_rating_url(@course, @rating), headers: @headers, params: {'value': 0}
+    put rating_url(@rating), headers: @headers, params: {'value': 0}
     assert_response 401
   end
 
   test "ability to modify rating with the creator" do
     add_auth_headers(@headers, @user)
-    put course_rating_url(@course, @rating), headers: @headers, params: {'value': 0}
+    put rating_url(@rating), headers: @headers, params: {'value': 0}
     assert_response :success
 
     assert_equal 0, json_response[:value]
@@ -130,7 +130,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
 
   test "ability to modify rating to not 0 or 1 with the creator" do
     add_auth_headers(@headers, @user)
-    put course_rating_url(@course, @rating), headers: @headers, params: {'value': 3}
+    put rating_url(@rating), headers: @headers, params: {'value': 3}
     assert_response 400
   end
 end

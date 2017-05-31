@@ -178,17 +178,16 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "should not add comment without auth" do
-    post course_comments_url(@course), headers: @headers, params: {'body': 'New comment without auth'}
+    post course_comments_url(@course, @comment), headers: @headers, params: {'body': 'New comment without auth'}
     assert_response 401
   end
 
   test "should add comment with auth" do
     add_auth_headers(@headers, @user)
-    post course_comments_url(@course), headers: @headers, params: {'body': 'New comment with auth'}
-    assert_equal 'New comment with auth', json_response[:body]
-    assert_equal @user.id, json_response[:user_id]
-    assert_equal @course.id, json_response[:course_id]
-    assert_response :success
+    post course_comments_url(@course, @comment), headers: @headers, params: {'body': 'New comment with auth'}
+    assert_equal 'New comment with auth', json_response[:data][:body]
+    assert_equal user_url(@user), json_response[:data][:user_url]
+    assert_response :created
   end
 
   # ----------------------------------------------------------------------
@@ -200,23 +199,23 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "ability to modify comment with different user" do
     add_auth_headers(@headers, @user_two)
-    put course_comment_url(@course, @comment), headers: @headers, params: {'body': 'Tried to change with wrong user'}
+    put comment_url(@comment), headers: @headers, params: {'body': 'Tried to change with wrong user'}
     assert_response 401
   end
 
   test "ability to modify comment with the creator" do
     add_auth_headers(@headers, @user)
-    put course_comment_url(@course, @comment), headers: @headers, params: {'body': 'Tried to change with right user'}
+    put comment_url(@comment), headers: @headers, params: {'body': 'Tried to change with right user'}
     assert_response :success
 
-    assert_equal 'Tried to change with right user', json_response[:body]
+    assert_equal 'Tried to change with right user', json_response[:data][:body]
   end
 
   test "ability to modify comment to empty body with the creator" do
     add_auth_headers(@headers, @user)
-    put course_comment_url(@course, @comment), headers: @headers, params: {'body': ''}
+    put comment_url(@comment), headers: @headers, params: {'body': ''}
     assert_response 400
 
-    assert_equal 'You can not edit this comment to have a empty body', json_response[:errors]
+    assert_equal 'You cannot edit this comment to have a empty body', json_response[:errors]
   end
 end

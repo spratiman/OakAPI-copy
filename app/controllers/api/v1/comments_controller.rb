@@ -11,7 +11,8 @@ class Api::V1::CommentsController < ApplicationController
   def create
     @course = Course.find(params[:course_id])
     @comment = @course.comments.new(params.permit(:body))
-    @comment.user = current_user
+    @user = current_user
+    @comment.user = @user
 
     if @comment.save
       render "api/v1/comments/show", status: :created

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
         resources :comments, only: [:index, :show, :create, :update, :destroy] do
           post 'reply', on: :member
         end
-        resources :ratings, only: [:index, :show]
+        resources :ratings, only: [:index, :show, :create, :update]
       end
     end
   end

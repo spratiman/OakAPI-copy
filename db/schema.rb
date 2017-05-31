@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 20170530222101) do
     t.integer "course_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["course_id"], name: "index_comments_on_course_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end

@@ -1,4 +1,6 @@
 class Comment < ApplicationRecord
+  attr_readonly :user, :course
+
   # Validations
   validates :body, :user, :course, presence: true
   validate :depth_cannot_be_greater_than_five
