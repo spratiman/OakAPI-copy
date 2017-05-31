@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170518134257) do
+ActiveRecord::Schema.define(version: 20170530222101) do
 
   create_table "comments", force: :cascade do |t|
     t.text "body", default: "", null: false
@@ -18,8 +18,6 @@ ActiveRecord::Schema.define(version: 20170518134257) do
     t.integer "course_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "ancestry"
-    t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["course_id"], name: "index_comments_on_course_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -43,7 +41,7 @@ ActiveRecord::Schema.define(version: 20170518134257) do
   create_table "ratings", force: :cascade do |t|
     t.integer "user_id"
     t.integer "course_id"
-    t.integer "value", default: 3, null: false
+    t.integer "value"
     t.string "rating_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

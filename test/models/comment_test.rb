@@ -11,18 +11,23 @@ class CommentTest < ActiveSupport::TestCase
     assert comment.save
   end
 
-  test "should allow multiple comments" do
-    comment = Comment.new(body: "this is comment", user: users(:richard), course: courses(:csc373))
+  test "should allow multiple comments by same user on course" do
+    comment = Comment.new(body: "great course", user: users(:richard), course: courses(:csc373))
     assert comment.save
   end
 
+  test "should not allow comments without body" do
+    comment = Comment.new(course: courses(:csc373), user: users(:richard))
+    assert_not comment.save
+  end
+
   test "should not allow comment without user" do
-    comment = Comment.new(course: courses(:csc373))
+    comment = Comment.new(body: "this is a comment", course: courses(:csc373))
     assert_not comment.save
   end
 
   test "should not allow comment without course" do
-    comment = Comment.new(user: users(:richard))
+    comment = Comment.new(body: "this is a comment", user: users(:richard))
     assert_not comment.save
   end
 
@@ -171,5 +176,11 @@ class CommentTest < ActiveSupport::TestCase
     assert_raises(Ancestry::AncestryException) do
       comment.destroy
     end
+  end
+
+  test "should_not_allow_empty_body_change" do
+    comment = comments(:one)
+    comment.body = ""
+    assert_not comment.save
   end
 end
