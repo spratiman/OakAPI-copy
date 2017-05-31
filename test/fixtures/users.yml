@@ -1,5 +1,12 @@
-
 richard:
   name: Richard Hendrichs
   email: richard@piedpiper.io
   encrypted_password: piedpiper123
+
+erlich:
+  uid: 123
+  name: Erlich Blachman
+  email: erlich@piedpiper.io
+  encrypted_password: jianyang
+  confirmation_token: lol
+  reset_password_token: lol123

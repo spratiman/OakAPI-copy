@@ -23,3 +23,6 @@
 # Extra files to ignore
 .byebug_history
 startup.sh
+
+# Ignore sublime files
+*.sublime*

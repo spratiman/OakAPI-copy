@@ -2,10 +2,15 @@ require 'test_helper'
 
 class CommentTest < ActiveSupport::TestCase
   test "should_allow_multiple_comments" do
-    comment = Comment.new(user: users(:richard), course: courses(:csc373))
+    comment = Comment.new(body: "great course", user: users(:richard), course: courses(:csc373))
     assert comment.save
   end
 
+  test "should_not_allow_comments_without_body" do
+    comment = Comment.new(course: courses(:csc373), user: users(:richard))
+    assert_not comment.save
+
+  end
   test "should_not_allow_comments_without_user" do
     comment = Comment.new(course: courses(:csc373))
     assert_not comment.save
@@ -20,5 +25,11 @@ class CommentTest < ActiveSupport::TestCase
     comment = comments(:one)
     comment.body = "Changed my mind after the results of first term went out..."
     assert comment.save
+  end
+
+  test "should_not_allow_empty_body_change" do
+    comment = comments(:one)
+    comment.body = ""
+    assert_not comment.save
   end
 end
