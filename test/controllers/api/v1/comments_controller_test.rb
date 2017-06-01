@@ -8,8 +8,8 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
     @reply = comments(:three)
     @course = courses(:csc373)
     @user = users(:richard)
-    @user2 = users(:dinesh)
-    @user_two = users(:erlich)
+    @user_two = users(:dinesh)
+    @user_three = users(:erlich)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
   end
 
@@ -91,10 +91,10 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   # ----------------------------------------------------------------------
   # Testing for the ability to view a single comment and making sure that
-  # the immediate replies to that comment are shown with and without 
+  # the immediate replies to that comment are shown with and without
   # authentication
   # ----------------------------------------------------------------------
-  
+
   test "show should display replies for comment with reply without auth" do
     get comment_url(@comment_with_reply), headers: @headers
     expected = @comment_with_reply.children[0][:id]
@@ -111,7 +111,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # ----------------------------------------------------------------------
-  # Testing for the ability to delete a single comment with and without 
+  # Testing for the ability to delete a single comment with and without
   # authentication
   # ----------------------------------------------------------------------
 
@@ -164,7 +164,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update should fail comment has replies" do
-    add_auth_headers(@headers, @user2)
+    add_auth_headers(@headers, @user_two)
     patch comment_url(@comment_with_reply), params: {body: "This comment is updated."}, headers: @headers
     assert_response :unprocessable_entity
   end
@@ -198,7 +198,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "ability to modify comment with different user" do
-    add_auth_headers(@headers, @user_two)
+    add_auth_headers(@headers, @user_three)
     put comment_url(@comment), headers: @headers, params: {'body': 'Tried to change with wrong user'}
     assert_response 401
   end
