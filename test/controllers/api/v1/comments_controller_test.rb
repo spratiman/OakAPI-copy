@@ -179,7 +179,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
 
   test "should not add comment without auth" do
     post course_comments_url(@course), headers: @headers, params: {'body': 'New comment without auth'}
-    assert_response 401
+    assert_response :unauthorized
   end
 
   test "should add comment with auth" do
@@ -200,7 +200,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   test "ability to modify comment with different user" do
     add_auth_headers(@headers, @user_three)
     put comment_url(@comment), headers: @headers, params: {'body': 'Tried to change with wrong user'}
-    assert_response 401
+    assert_response :unauthorized
   end
 
   test "ability to modify comment with the creator" do
@@ -214,7 +214,7 @@ class Api::V1::CommentsControllerTest < ActionDispatch::IntegrationTest
   test "ability to modify comment to empty body with the creator" do
     add_auth_headers(@headers, @user)
     put comment_url(@comment), headers: @headers, params: {'body': ''}
-    assert_response 400
+    assert_response :bad_request
 
     assert_equal 'You cannot edit this comment to have a empty body', json_response[:errors]
   end

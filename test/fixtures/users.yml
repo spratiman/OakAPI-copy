@@ -3,25 +3,27 @@
 richard:
   uid: richardpiper
   name: Richard Hendrichs
+  nickname: Richard
   email: richard@piedpiper.io
   encrypted_password: piedpiper123
 
 dinesh:
   uid: dineshpiper
   name: Dinesh Chugtai
+  nickname: Dinesh
   email: dinesh@piedpiper.io
   encrypted_password: gilfoylesux
 
 gilfoyle:
   uid: gilfoylepiper
   name: Bertram Gilfoyle
+  nickname: Gilfoyle
   email: gilfoyle@piedpiper.io
   encrypted_password: satanist666
 
 erlich:
-  uid: 123
+  uid: erlichpiper
   name: Erlich Blachman
+  nickname: Erlich
   email: erlich@piedpiper.io
   encrypted_password: jianyang
-  confirmation_token: lol
-  reset_password_token: lol123
