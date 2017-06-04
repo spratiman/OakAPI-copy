@@ -7,7 +7,7 @@ A RESTful API that Oak uses to manage data related to courses, comments, ratings
 * [Ruby 2.2.2 or newer](https://www.ruby-lang.org/en/)
 * [Bundler](http://bundler.io/)
 
-__NOTE: It is recommended to set up your development environment on a *nix operating system (ie. MacOS, any Linux distro, etc). If you are rocking a Windows machine, you can set up a [Vagrant box](https://gorails.com/guides/using-vagrant-for-rails-development), create a [Docker image](https://blog.codeship.com/running-rails-development-environment-docker/), or (if you are running Windows 10) set up [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide#enable-the-windows-subsystem-for-linux-feature-gui).__
+__NOTE: It is recommended to set up your development environment on a *nix operating system (ie. MacOS, any Linux distro, etc). If you are rocking a Windows machine, you can set up a [Vagrant box](https://gorails.com/guides/using-vagrant-for-rails-development), create a [Docker image](https://blog.codeship.com/running-rails-development-environment-docker/), or (if you are running Windows 10) set up [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide#enable-the-windows-subsystem-for-linux-feature-gui).
 
 ## Installation
 
@@ -23,10 +23,11 @@ This will install all of the gems defined in the `Gemfile`, including Rails. At 
 
 ### Generating the Database
 
-To generate the database for development and testing environments, run this command in your console:
+To generate the database for development and testing environments, run these commands in your console:
 
 ```
-rails db:migrate && rails db:migrate RAILS_ENV=test 
+bundle exec rails db:migrate
+bundle exec rails db:migrate RAILS_ENV=test 
 ```
 
 This will generate `development.sqlite3` and `test.sqlite3` files in the `\db` directory, as well as update the schema, if necessary.
@@ -36,7 +37,7 @@ This will generate `development.sqlite3` and `test.sqlite3` files in the `\db` d
 To populate the database with courses from [Cobalt datasets](https://github.com/cobalt-uoft/datasets), run:
 
 ```
-rake update_course
+bundle exec rake update_course
 ```
 
 This may take some time, but when complete, your development database will be populated with courses from the most recent academic year.
@@ -46,7 +47,7 @@ This may take some time, but when complete, your development database will be po
 You may also want to create a user so that you can get an authentication token to test different routes. To do this, you will need to run a rails console:
 
 ```
-rails c
+bundle exec rails c
 ```
 
 You will need to create a new user with email and password using the create method on the User model:
@@ -62,7 +63,7 @@ You can exit out of the Rails console by simply typing `exit`.
 To start the server:
 
 ```
-rails server
+bundle exec rails server
 ```
 
 This will start a server on http://localhost:3000 under the development environment. You can interact with the API using curl if you prefer using the command line. However, it is recommended that you make use of a GUI application such as [Postman](https://www.getpostman.com/) or [Insomnia](https://insomnia.rest/). You will need to include the HTTP header `Accept: application/vnd.oak.v1` in order for any requests to work.
@@ -70,7 +71,7 @@ This will start a server on http://localhost:3000 under the development environm
 To run tests:
 
 ```
-rails test
+bundle exec rails test
 ```
 
 ## API Endpoints
