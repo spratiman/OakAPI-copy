@@ -7,7 +7,7 @@ A RESTful API that Oak uses to manage data related to courses, comments, ratings
 * [Ruby 2.2.2 or newer](https://www.ruby-lang.org/en/)
 * [Bundler](http://bundler.io/)
 
-__NOTE: It is recommended to set up your development environment on a *nix operating system (ie. MacOS, any Linux distro, etc). If you are rocking a Windows machine, you can set up a [Vagrant box](https://gorails.com/guides/using-vagrant-for-rails-development), create a [Docker image](https://blog.codeship.com/running-rails-development-environment-docker/), or (if you are running Windows 10) set up [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide#enable-the-windows-subsystem-for-linux-feature-gui).
+__NOTE: It is recommended to set up your development environment on a *nix operating system (ie. MacOS, any Linux distro, etc). If you are rocking a Windows machine, you can set up a [Vagrant box](https://gorails.com/guides/using-vagrant-for-rails-development), create a [Docker image](https://blog.codeship.com/running-rails-development-environment-docker/), or (if you are running Windows 10) set up [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide#enable-the-windows-subsystem-for-linux-feature-gui).__
 
 ## Installation
 
