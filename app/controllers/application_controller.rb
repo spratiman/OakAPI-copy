@@ -8,7 +8,8 @@ class ApplicationController < ActionController::API
 
   def make_sure_unauthenticated
     if user_signed_in?
-      render json: { errors: 'You can not make register if you are already authenticated' }, status: :unauthorized
+      render json: { errors: 'You can not make a request to register if you are already authenticated' }, status: :unauthorized
+      return false
     end
     return true
   end
@@ -36,6 +37,7 @@ class ApplicationController < ActionController::API
       return true
     end
     render json: error_msg, status: :bad_request
+    return false
   end
 
   def configure_permitted_parameters
