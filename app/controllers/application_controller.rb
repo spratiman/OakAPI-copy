@@ -15,29 +15,32 @@ class ApplicationController < ActionController::API
   end
 
   def confirm_parameters_present
-    password_check = params[:password_confirmation].present?
-    name_check = params[:name].present?
-    nickname_check = params[:nickname].present?
+    if request.path == '/auth'
+      password_check = params[:password_confirmation].present?
+      name_check = params[:name].present?
+      nickname_check = params[:nickname].present?
 
-    error_msg = { :errors => [] }
+      error_msg = { :errors => [] }
 
-    if !password_check
-      error_msg[:errors] << "You must confirm your password"
+      if !password_check
+        error_msg[:errors] << "You must confirm your password"
+      end
+
+      if !name_check
+        error_msg[:errors] << "You must provide your full name"
+      end
+
+      if !nickname_check
+        error_msg[:errors] << "You must provide your nickname/first name"
+      end
+
+      if password_check && name_check && nickname_check
+        return true
+      end
+      render json: error_msg, status: :bad_request
+      return false
     end
-
-    if !name_check
-      error_msg[:errors] << "You must provide your full name"
-    end
-
-    if !nickname_check
-      error_msg[:errors] << "You must provide your nickname/first name"
-    end
-
-    if password_check && name_check && nickname_check
-      return true
-    end
-    render json: error_msg, status: :bad_request
-    return false
+    return true
   end
 
   def configure_permitted_parameters
