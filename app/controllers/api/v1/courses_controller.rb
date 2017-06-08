@@ -3,7 +3,7 @@ class Api::V1::CoursesController < ApplicationController
 
   # GET /courses
   def index
-    @courses = Course.limit(10)
+    @courses = Course.all
   end
 
   # GET /courses/:id
