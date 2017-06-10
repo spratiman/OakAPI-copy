@@ -11,5 +11,7 @@ until psql -h "$host" -U "postgres" -c '\q' &>/dev/null; do
   sleep 1
 done
 
+rails db:setup
+
 >&2 echo -e "\e[32mPostgres is up - executing command\e[39m"
 exec $cmd
