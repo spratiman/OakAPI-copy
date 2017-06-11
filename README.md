@@ -1,6 +1,6 @@
 # OakAPI
 
-[![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/)
+[![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/?repo=https://github.com/uoftweb/OakAPI)
 
 A RESTful API that Oak uses to manage data related to courses, comments, ratings, users, etc. The API returns all data in JSON format and uses HTTP verbs and status codes to communicate intent. This API is built on Ruby on Rails and makes use of [Devise](https://github.com/plataformatec/devise) and [devise_auth_token](https://github.com/lynndylanhurley/devise_token_auth) for user authentication. JSON templates are also generated using [Jbuilder](https://github.com/rails/jbuilder).
 
