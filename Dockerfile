@@ -6,4 +6,4 @@ ADD Gemfile /oak-api/Gemfile
 ADD Gemfile.lock /oak-api/Gemfile.lock
 RUN bundle install
 ADD . /oak-api
-EXPOSE 3000
+EXPOSE 80
