@@ -7,9 +7,12 @@ services:
     ports:
       - "1080:1080"
   web:
-    build: .
-    entrypoint: ./wait-for-postgres.sh db
-    command: bundle exec rails server -p 3000 -b 0.0.0.0
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: ./docker/startup.sh
+    environment:
+      - OAK_DATABASE_HOST=db
     volumes:
       - .:/oak-api
     ports:

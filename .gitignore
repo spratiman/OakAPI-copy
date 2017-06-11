@@ -26,3 +26,5 @@ startup.sh
 
 # Ignore sublime files
 *.sublime*
+
+.env
