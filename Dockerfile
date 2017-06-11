@@ -14,4 +14,6 @@ ADD . $APP_HOME
 
 EXPOSE 3000
 
-CMD ["/bin/bash", "/oak-api/docker/startup.sh"]
+RUN chmod -R u+x /docker
+
+CMD ["./docker/startup.sh"]
