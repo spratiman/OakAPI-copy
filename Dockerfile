@@ -14,6 +14,6 @@ ADD . $APP_HOME
 
 EXPOSE 3000
 
-RUN chmod -R u+x /docker
+RUN chmod -R u+x $APP_HOME/docker
 
 CMD ["./docker/startup.sh"]
