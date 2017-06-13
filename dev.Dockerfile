@@ -14,6 +14,5 @@ ADD . $APP_HOME
 
 EXPOSE 3000
 
-RUN chmod -R u+x $APP_HOME/docker
-
-CMD ["./docker/startup.sh"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["bundle", "exec", "rails", "server", "-p", "3000", "-b", "0.0.0.0"]
