@@ -4,6 +4,12 @@ services:
     image: postgres
   mailcatcher:
     image: schickling/mailcatcher
+  pgadmin:
+    image: thajeztah/pgadmin4
+    ports:
+      - "5050:5050"
+    depends_on:
+      - db
   web:
     build:
       context: .
