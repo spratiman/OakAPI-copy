@@ -38,10 +38,9 @@ namespace :app do
     file_path = "lib/assets/courses.json"
     page_content = File.open(file_path, "r")
     file_size = File.size(file_path)
-
-    progressbar = ProgressBar.create( :format         => "%a %b\u{15E7}%i %p%% %t",
-                        :progress_mark  => ' ',
-                        :remainder_mark => "\u{FF65}")
+    progressbar = ProgressBar.create( :format  => "%a %b\u{15E7}%i %p%% %t",
+                                      :progress_mark  => ' ',
+                                      :remainder_mark => "\u{FF65}")
     progress = 0
     page_content.each_line { |line|
       course = JSON.parse(line)
@@ -49,6 +48,7 @@ namespace :app do
       progress += line.size
       progressbar.progress = (progress/(file_size * 1.0) * 100)
     }
+    progressbar.progress = 100
     puts "\nCourses updated"
   end
 
