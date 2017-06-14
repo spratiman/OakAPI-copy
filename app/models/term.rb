@@ -1,10 +1,10 @@
-require_relative 'lecture'
-
 class Term < ApplicationRecord
   # Associations
-  belongs_to :course
+  belongs_to :course, inverse_of: :terms
   has_many :ratings, inverse_of: :term
-  has_many :lectures
+  has_many :lectures, inverse_of: :term
+  has_many :enrolments, inverse_of: :term
+  has_many :users, through: :enrolments
 
   def self.update_db(course_id, input)
     breadth_num_to_val = Hash[1 => "Creative and Cultural Representations",

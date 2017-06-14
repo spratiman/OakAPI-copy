@@ -1,15 +1,11 @@
-require_relative 'term'
-
 class Course < ApplicationRecord
   # Validations
   validates :code, uniqueness: true, presence: true
   validates :title, presence: true
 
   # Associations
-  has_many :terms
-  has_many :users, through: :user_courses
+  has_many :terms, inverse_of: :course
   has_many :comments, inverse_of: :course
-  has_many :ratings, through: :terms
 
   def self.update_db(input)
     # parse the course code not include the term

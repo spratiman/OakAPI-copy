@@ -1,6 +1,6 @@
 class Lecture < ApplicationRecord
   # Associations
-  belongs_to :terms
+  belongs_to :term, inverse_of: :lectures
 
   def self.update_db(term_id, course_id, input)
     # parse the instructors into a string
