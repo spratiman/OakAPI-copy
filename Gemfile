@@ -24,9 +24,13 @@ gem 'bcrypt', '~> 3.1.7'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 
+# Use sqlite3 as the database for Active Record ONLY for testing and development purposes
+# gem 'sqlite3'
+
+# Use PostgreSQL for all environments to ensure consistency
+gem 'pg'
+
 group :development, :test do
-  # Use sqlite3 as the database for Active Record ONLY for testing and development purposes
-  gem 'sqlite3'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end

@@ -1,53 +1,51 @@
 # OakAPI
 
+[![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/?repo=https://github.com/uoftweb/OakAPI)
+
 A RESTful API that Oak uses to manage data related to courses, comments, ratings, users, etc. The API returns all data in JSON format and uses HTTP verbs and status codes to communicate intent. This API is built on Ruby on Rails and makes use of [Devise](https://github.com/plataformatec/devise) and [devise_auth_token](https://github.com/lynndylanhurley/devise_token_auth) for user authentication. JSON templates are also generated using [Jbuilder](https://github.com/rails/jbuilder).
 
 ## Dependencies
 
-* [Ruby 2.2.2 or newer](https://www.ruby-lang.org/en/)
-* [Bundler](http://bundler.io/)
-
-__NOTE: It is recommended to set up your development environment on a *nix operating system (ie. MacOS, any Linux distro, etc). If you are rocking a Windows machine, you can set up a [Vagrant box](https://gorails.com/guides/using-vagrant-for-rails-development), create a [Docker image](https://blog.codeship.com/running-rails-development-environment-docker/), or (if you are running Windows 10) set up [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/install_guide#enable-the-windows-subsystem-for-linux-feature-gui).__
+This project makes use of [Docker](https://www.docker.com/community-edition) for the development environment to maintain consistency. 
 
 ## Installation
 
 Clone the repository to your computer.
 
-Open a console in the root of the project directory and enter:
+Make sure Docker is running. Open a console in the root of the project directory and enter:
 
 ```
-bundle install
+docker-compose build
 ```
 
-This will install all of the gems defined in the `Gemfile`, including Rails. At this point you could run `rails server`, but you will receive a bunch of migration errors because the database has not been generated yet.
+This will download and build the required images to run the API. **WARNING: This step takes quite a while depending on your internet connection, so feel free to take this time to grab a coffee or read through the rest of this document.** If you make a change to the Dockerfiles or docker-compose.yml, you will have to run this command again to rebuild the image, but depending on your changes, subsequent builds will be much faster due to caching. At this point you could try to run `docker-compose up`, which starts all the required services, but you will receive a bunch of errors because the database has not been generated yet.
 
 ### Generating the Database
 
-To generate the database for development and testing environments, run these commands in your console:
+To generate the database for development and testing environments, run this commands in your console:
 
 ```
-bundle exec rails db:migrate
-bundle exec rails db:migrate RAILS_ENV=test 
+docker-compose run web bundle exec rails db:setup
 ```
 
-This will generate `development.sqlite3` and `test.sqlite3` files in the `\db` directory, as well as update the schema, if necessary.
+This will generate development and test databases, as well as run migrations. You only have to do this once.
 
 ### Populating the Database with Courses
 
 To populate the database with courses from [Cobalt datasets](https://github.com/cobalt-uoft/datasets), run:
 
 ```
-bundle exec rake update_course
+docker-compose run web bundle exec rake app:download_courses app:update_courses
 ```
 
-This may take some time, but when complete, your development database will be populated with courses from the most recent academic year.
+This may take some time, but when it completes, your development database will be populated with courses from the most recent academic year.
 
 ### Creating a User
 
 You may also want to create a user so that you can get an authentication token to test different routes. To do this, you will need to run a rails console:
 
 ```
-bundle exec rails c
+docker-compose run web bundle exec rails c
 ```
 
 You will need to create a new user with email and password using the create method on the User model:
@@ -60,18 +58,44 @@ You can exit out of the Rails console by simply typing `exit`.
 
 ## Usage
 
-To start the server:
+To start the required containers for the first time:
 
 ```
-bundle exec rails server
+docker-compose up
 ```
 
 This will start a server on http://localhost:3000 under the development environment. You can interact with the API using curl if you prefer using the command line. However, it is recommended that you make use of a GUI application such as [Postman](https://www.getpostman.com/) or [Insomnia](https://insomnia.rest/). You will need to include the HTTP header `Accept: application/vnd.oak.v1` in order for any requests to work.
 
-To run tests:
+To run tests in a running container:
 
 ```
-bundle exec rails test
+docker-compose exec web bundle exec rails test
+```
+
+To stop the containers:
+
+```
+docker-compose stop
+```
+
+To start up a container:
+
+```
+docker-compose start
+```
+
+**NOTE: This command is different from `docker-compose up` because it only starts existing containers, whereas the `up` command creates AND starts _new_ containers**
+
+To list running containers:
+
+```
+docker-compose ps
+```
+
+To stop and **remove** the containers:
+
+```
+docker-compose down
 ```
 
 ## API Endpoints
