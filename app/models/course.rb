@@ -1,48 +1,48 @@
+require_relative 'term'
+
 class Course < ApplicationRecord
   # Validations
   validates :code, uniqueness: true, presence: true
   validates :title, presence: true
-  
+
   # Associations
-  has_many :user_courses
+  has_many :terms
   has_many :users, through: :user_courses
   has_many :comments, inverse_of: :course
-  has_many :ratings, inverse_of: :course
+  has_many :ratings, through: :terms
 
   def self.update_db(input)
-    breadth_num_to_val = Hash[1 => "Creative and Cultural Representations",
-      2 => "Thought, Belief, and Behaviour",
-      3 => "Society and Its Institutions",
-      4 => "Living Things and Their Environment",
-      5 => "The Physical and Mathematical Universes"]
-      breadth_string = ""
-      input["breadths"].each do |breadth_num|
-        breadth_string << breadth_num_to_val[breadth_num] + ";"
-      end
+    # parse the course code not include the term
+    course_code = input["code"][0..5]
 
-      if Course.exists?(:code => input["code"])
-        course = Course.where(code: input["code"])
-        course.update(title:          input["name"],
-                      description:    input["description"],
-                      prerequisites:  input["prerequisites"],
-                      exclusions:     input["exclusions"],
-                      breadths:       breadth_string,
-                      department:     input["department"],
-                      division:       input["division"],
-                      level:          input["level"],
-                      campus:         input["campus"])
-      else
-        course = Course.new(code:           input["code"],
-                            title:          input["name"],
-                            description:    input["description"],
-                            prerequisites:  input["prerequisites"],
-                            exclusions:     input["exclusions"],
-                            breadths:       breadth_string,
-                            department:     input["department"],
-                            division:       input["division"],
-                            level:          input["level"],
-                            campus:         input["campus"])
-        course.save
-      end
+    # parse the title of the course
+    if input["name"].to_s.empty?
+      title = course_code
+    else
+      title = input["name"]
+    end
+
+    if Course.exists?(:code => course_code)
+      course = Course.where(code: course_code)
+      course.update(title:        title,
+                    department:   input["department"],
+                    division:     input["division"],
+                    level:        input["level"],
+                    campus:       input["campus"])
+
+      course_id = course.as_json[0]["id"]
+      Term.update_db(course_id, input)
+    else
+      course = Course.new(code:       course_code,
+                          title:      title,
+                          department: input["department"],
+                          division:   input["division"],
+                          level:      input["level"],
+                          campus:     input["campus"])
+      course.save!
+
+      course_id = course.as_json["id"]
+      Term.update_db(course_id, input)
     end
   end
+end

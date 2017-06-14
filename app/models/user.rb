@@ -11,7 +11,7 @@ class User < ApplicationRecord
 
   # Associations
   has_many :user_courses
-  has_many :courses, through: :user_courses
+  has_many :terms, through: :user_courses
   has_many :comments, inverse_of: :user
   has_many :ratings, inverse_of: :user
 end

@@ -1,10 +1,11 @@
 require 'test_helper'
 
-class Api::V1::CoursesControllerTest < ActionDispatch::IntegrationTest
+class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @course = courses(:csc373)
     @user = users(:richard)
+    @term = terms(:one)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
   end
 
@@ -13,53 +14,53 @@ class Api::V1::CoursesControllerTest < ActionDispatch::IntegrationTest
   end
 
   # ----------------------------------------------------------------------
-  # Testing for the ability to get all the courses with and without
-  # authentication
+  # Testing for the ability to get all the terms for a course with and
+  # without authentication
   # ----------------------------------------------------------------------
 
   test "should get index without auth" do
-    get courses_url, headers: @headers
+    get course_terms_url(@course), headers: @headers
     assert_response :success
   end
 
   test "should get index with auth" do
     add_auth_headers(@headers, @user)
-    get courses_url, headers: @headers
+    get course_terms_url(@course), headers: @headers
     assert_response :success
   end
 
   # ----------------------------------------------------------------------
-  # Testing for the ability to look at a single course with and without
-  # user authentication
+  # Testing for the ability to look at a single term for a course with
+  # and without user authentication
   # ----------------------------------------------------------------------
 
   test "should get show without auth" do
-    get course_url(@course), headers: @headers
+    get term_url(@term), headers: @headers
     assert_response :success
   end
 
   test "should get show with auth" do
     add_auth_headers(@headers, @user)
-    get course_url(@course), headers: @headers
+    get term_url(@term), headers: @headers
     assert_response :success
   end
 
   # ----------------------------------------------------------------------
-  # Testing for the ability to look at a single course and make sure its
-  # the correct one with and without authentication
+  # Testing for the ability to look at a single term for a course and
+  # make sure its the correct one with and without authentication
   # ----------------------------------------------------------------------
 
-  test "show should show course without auth" do
-    get course_url(@course), headers: @headers
-    expected = @course.id
+  test "show should show term without auth" do
+    get term_url(@term), headers: @headers
+    expected = @term.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
   end
 
-  test "show should show course with auth" do
+  test "show should show term with auth" do
     add_auth_headers(@headers, @user)
-    get course_url(@course), headers: @headers
-    expected = @course.id
+    get term_url(@term), headers: @headers
+    expected = @term.id
     actual = json_response[:data][:id]
     assert_equal expected, actual
   end

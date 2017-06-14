@@ -12,6 +12,9 @@ Rails.application.routes.draw do
           post 'reply', on: :member
         end
         resources :ratings, only: [:index, :show, :create, :update]
+        resources :terms, only: [:index, :show] do
+          resources :lectures, only: [:index, :show]
+        end
       end
     end
   end
