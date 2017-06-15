@@ -63,5 +63,4 @@ class Api::V1::CoursesControllerTest < ActionDispatch::IntegrationTest
     actual = json_response[:data][:id]
     assert_equal expected, actual
   end
-
 end

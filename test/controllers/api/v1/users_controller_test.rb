@@ -4,6 +4,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:richard)
     @user_two = users(:erlich)
+    @term = terms(:fall)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
   end
 
@@ -50,6 +51,25 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     actual = json_response[:data][:id]
     assert_equal expected, actual
   end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to look at a user enrolments and make sure
+  # its correct and should only work with authentication
+  # ----------------------------------------------------------------------
+
+  test "should not show enrolments without auth" do
+    get enrolments_user_url(@user), headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "should show enrolments with auth" do
+    add_auth_headers(@headers, @user)
+    post enrol_term_url(@term), headers: @headers
+    get enrolments_user_url(@user), headers: @headers
+    assert_response :success
+  end
+
+
 
   # ----------------------------------------------------------------------
   # Testing for the ability to create accounts if provided all the

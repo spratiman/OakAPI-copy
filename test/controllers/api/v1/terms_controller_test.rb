@@ -65,4 +65,53 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
     assert_equal expected, actual
   end
 
+  # ----------------------------------------------------------------------
+  # Testing for the ability to enrol in a term that relates to a course
+  # and make sure it shows up in the user enrolments and does not work
+  # without authentication.
+  #
+  # Test to make sure a user can only enrol in a term once
+  # ----------------------------------------------------------------------
+
+  test "enrol should not work without auth" do
+    post enrol_term_url(@term), headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "enrol should work with auth" do
+    add_auth_headers(@headers, @user)
+    post enrol_term_url(@term), headers: @headers
+
+    assert_equal @term.id, @user.enrolments.as_json[0]['term_id']
+    assert_equal @user.id, @user.enrolments.as_json[0]['user_id']
+  end
+
+  test "enrol should work with auth only once" do
+    add_auth_headers(@headers, @user)
+    post enrol_term_url(@term), headers: @headers
+    assert_response :success
+
+    post enrol_term_url(@term), headers: @headers
+    assert_response :bad_request
+  end
+
+  # ----------------------------------------------------------------------
+  # Testing for the ability to enrol in a term that relates to a course
+  # and make sure it shows up in the user enrolments and does not work
+  # without authentication
+  # ----------------------------------------------------------------------
+
+  test "de-enrol should not work without auth" do
+    delete remove_enrol_term_url(@term), headers: @headers
+    assert_response :unauthorized
+  end
+
+  test "de-enrol should work with auth" do
+    add_auth_headers(@headers, @user)
+    post enrol_term_url(@term), headers: @headers
+    delete remove_enrol_term_url(@term), headers: @headers
+
+    assert_response :success
+    assert @user.enrolments.empty?
+  end
 end
