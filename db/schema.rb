@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170614232214) do
+ActiveRecord::Schema.define(version: 20170615001742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,9 +77,7 @@ ActiveRecord::Schema.define(version: 20170614232214) do
     t.text "exclusions"
     t.text "prerequisites"
     t.text "breadths"
-    t.bigint "enrolment_id"
     t.index ["course_id"], name: "index_terms_on_course_id"
-    t.index ["enrolment_id"], name: "index_terms_on_enrolment_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -105,10 +103,8 @@ ActiveRecord::Schema.define(version: 20170614232214) do
     t.text "tokens"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "enrolment_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["enrolment_id"], name: "index_users_on_enrolment_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
@@ -119,6 +115,4 @@ ActiveRecord::Schema.define(version: 20170614232214) do
   add_foreign_key "ratings", "terms"
   add_foreign_key "ratings", "users"
   add_foreign_key "terms", "courses"
-  add_foreign_key "terms", "enrolments"
-  add_foreign_key "users", "enrolments"
 end
