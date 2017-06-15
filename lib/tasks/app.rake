@@ -8,17 +8,17 @@ require_relative "../../app/models/course"
 
 namespace :app do
 
+  # intialize constant array to store link info for the latest and archived datasets
+  DATASETS = ["2c93053", "1524e41", "7bd4ddb", "f960682", "42a0725", "faf8f1f"]
+
   desc "Downloads courses from Cobalt datasets and stores in assets folder"
   task :download_courses => :environment do
     # Retrieve courses directly from dataset available by the name courses.json
     # File can be obtained on https://github.com/cobalt-uoft/datasets
 
-    # intialize array to store links for the latest and archived datasets
-    datasets = ["master", "1524e41", "7bd4ddb", "f960682", "42a0725", "faf8f1f"]
-
     # start downloading the course data for each dataset stored online
     puts "Downloading courses data..."
-    datasets.each{ |dataset|
+    DATASETS.each{ |dataset|
       total_size = 0
       page_content = open("https://github.com/cobalt-uoft/datasets/raw/" + dataset + "/courses.json",
         :content_length_proc => lambda {|t|
@@ -42,10 +42,7 @@ namespace :app do
 
   desc "Creates/updates courses using courses loaded from file"
   task :update_courses => :environment do
-    # intialize array to store links for the latest and archived datasets
-    datasets = ["faf8f1f", "42a0725", "f960682", "7bd4ddb", "1524e41", "master"]
-
-    datasets.each{ |dataset|
+    DATASETS.reverse_each{ |dataset|
       file_path = "lib/assets/courses_" + dataset + ".json"
       page_content = File.open(file_path, "r")
       file_size = File.size(file_path)

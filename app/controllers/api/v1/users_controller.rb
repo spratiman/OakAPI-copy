@@ -13,8 +13,8 @@ class Api::V1::UsersController < ApplicationController
 
   # GET /users/:id/enrolments
   def enrolments
-    @user = User.find(params[:id])
-    @enrolment = @user.enrolments
+    user = User.find(params[:id])
+    @enrolment = user.enrolments
 
     render json: @enrolment
   end
