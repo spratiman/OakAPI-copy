@@ -11,4 +11,10 @@ until psql -h "$OAK_DATABASE_HOST" -U "postgres" -c "\q" 2>&1; do
 done
 
 echo -e "\e[32mPostgres is up and running - executing command\e[39m"
+
+# If a server was running, end it
+if [ -f tmp/pids/server.pid ]; then
+  rm tmp/pids/server.pid
+fi
+
 exec $cmd
