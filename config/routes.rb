@@ -11,8 +11,8 @@ Rails.application.routes.draw do
         resources :comments, only: [:index, :show, :create, :update, :destroy] do
           post 'reply', on: :member
         end
-        resources :ratings, only: [:index, :show, :create, :update]
         resources :terms, only: [:index, :show] do
+          resources :ratings, only: [:index, :show, :create, :update], shallow: true
           resources :lectures, only: [:index, :show]
         end
       end

@@ -5,7 +5,7 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @course = courses(:csc373)
     @user = users(:richard)
-    @term = terms(:one)
+    @term = terms(:fall)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
   end
 

@@ -3,5 +3,5 @@
 one:
   value: 1
   user: richard
-  course: csc373
   rating_type: overall
+  term: fall

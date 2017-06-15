@@ -1,9 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  term: Fall 2016
+fall:
+  course: csc373
+  term: fall
   description: Standard algorithm design techniques where students will be expected to show good design principles and adequate skills at reasoning about the correctness and complexity of algorithms.
 
-two:
-  term: Winter 2017
+winter:
+  course: csc473
+  term: winter
   description: Advanced algorithm design techniques to blow your mind if not blown by now.

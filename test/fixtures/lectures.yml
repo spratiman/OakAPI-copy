@@ -2,10 +2,8 @@
 
 one:
   code: MyString
-  time: MyString
   instructor: MyString
 
 two:
   code: MyString
-  time: MyString
   instructor: MyString
