@@ -35,7 +35,7 @@ This will generate development and test databases, as well as run migrations. Yo
 To populate the database with courses from [Cobalt datasets](https://github.com/cobalt-uoft/datasets), run:
 
 ```
-docker-compose run web bundle exec rake app:download_courses app:update_courses
+docker-compose run web bundle exec rake app:update_courses
 ```
 
 This may take some time, but when it completes, your development database will be populated with courses from the most recent academic year.
