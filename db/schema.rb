@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170602020514) do
+ActiveRecord::Schema.define(version: 20170616001824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,39 +30,53 @@ ActiveRecord::Schema.define(version: 20170602020514) do
   create_table "courses", force: :cascade do |t|
     t.string "code"
     t.string "title"
-    t.text "description"
-    t.text "exclusions"
-    t.text "prerequisites"
-    t.text "breadths"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "department"
     t.string "division"
     t.integer "level"
     t.string "campus"
-    t.index ["code"], name: "index_courses_on_code", unique: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code", "campus"], name: "index_courses_on_code_and_campus", unique: true
+  end
+
+  create_table "enrolments", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "term_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "lectures", force: :cascade do |t|
+    t.bigint "term_id"
+    t.string "code"
+    t.string "instructor"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["term_id"], name: "index_lectures_on_term_id"
   end
 
   create_table "ratings", force: :cascade do |t|
     t.bigint "user_id"
-    t.bigint "course_id"
+    t.integer "value", default: 0
     t.string "rating_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "value"
-    t.index ["course_id"], name: "index_ratings_on_course_id"
-    t.index ["user_id", "course_id", "rating_type"], name: "index_ratings_on_user_id_and_course_id_and_rating_type", unique: true
+    t.bigint "term_id"
+    t.index ["term_id"], name: "index_ratings_on_term_id"
+    t.index ["user_id", "term_id", "rating_type"], name: "index_ratings_on_user_id_and_term_id_and_rating_type", unique: true
     t.index ["user_id"], name: "index_ratings_on_user_id"
   end
 
-  create_table "user_courses", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "course_id"
-    t.text "body"
-    t.boolean "has_dropped"
-    t.boolean "is_waitlisted"
+  create_table "terms", force: :cascade do |t|
+    t.bigint "course_id"
+    t.string "term"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
+    t.text "exclusions"
+    t.text "prerequisites"
+    t.text "breadths"
+    t.index ["course_id"], name: "index_terms_on_course_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -96,6 +110,8 @@ ActiveRecord::Schema.define(version: 20170602020514) do
 
   add_foreign_key "comments", "courses"
   add_foreign_key "comments", "users"
-  add_foreign_key "ratings", "courses"
+  add_foreign_key "lectures", "terms"
+  add_foreign_key "ratings", "terms"
   add_foreign_key "ratings", "users"
+  add_foreign_key "terms", "courses"
 end

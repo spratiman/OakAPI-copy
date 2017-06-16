@@ -4,7 +4,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @rating = ratings(:one)
-    @course = courses(:csc373)
+    @term = terms(:fall)
     @user = users(:richard)
     @user_two = users(:erlich)
     @headers = {'Accept' => 'application/vnd.oak.v1'}
@@ -15,24 +15,24 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # ----------------------------------------------------------------------
-  # Testing for the ability to get all the ratings for a course with and
-  # without authentication
+  # Testing for the ability to get all the ratings for a term in a course
+  # with and without authentication
   # ----------------------------------------------------------------------
 
   test "should get index without auth" do
-    get course_ratings_url(@course), headers: @headers
+    get term_ratings_url(@term), headers: @headers
     assert_response :success
   end
 
   test "should get index with auth" do
     add_auth_headers(@headers, @user)
-    get course_ratings_url(@course), headers: @headers
+    get term_ratings_url(@term), headers: @headers
     assert_response :success
   end
 
   # ----------------------------------------------------------------------
-  # Testing for the ability to view single ratings for courses with and
-  # without authentication
+  # Testing for the ability to view single ratings for a term in a course
+  # with and without authentication
   # ----------------------------------------------------------------------
 
   test "should get show without auth" do
@@ -88,23 +88,23 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # ----------------------------------------------------------------------
-  # Testing for the ability to add rating for courses without
+  # Testing for the ability to add rating for terms in a course without
   # authentication and with
   #
   # After, adding the rating, make sure it is assigned to the proper
-  # course and user
+  # term and user
   # ----------------------------------------------------------------------
   test "should not add rating without auth" do
-    post course_ratings_url(@course), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
+    post term_ratings_url(@term), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
     assert_response 401
   end
 
   test "should add rating with auth" do
     add_auth_headers(@headers, @user_two)
-    post course_ratings_url(@course), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
+    post term_ratings_url(@term), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
     assert_equal 1, json_response[:value]
     assert_equal @user_two.id, json_response[:user_id]
-    assert_equal @course.id, json_response[:course_id]
+    assert_equal @term.id, json_response[:term_id]
     assert_response :success
   end
 

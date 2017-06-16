@@ -7,8 +7,9 @@ class Comment < ApplicationRecord
   validate :course_is_not_different_from_parent_course
   
   # Associations
-  belongs_to :user
-  belongs_to :course
+  belongs_to :user, inverse_of: :comments
+  belongs_to :course, inverse_of: :comments
+  
   has_ancestry :orphan_strategy => :restrict
 
   private

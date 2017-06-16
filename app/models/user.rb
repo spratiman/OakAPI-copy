@@ -10,8 +10,8 @@ class User < ApplicationRecord
   validates :email, uniqueness: true, presence: true
 
   # Associations
-  has_many :user_courses
-  has_many :courses, through: :user_courses
   has_many :comments, inverse_of: :user
   has_many :ratings, inverse_of: :user
+  has_many :enrolments, inverse_of: :user
+  has_many :terms, through: :enrolments
 end

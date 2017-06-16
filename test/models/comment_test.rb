@@ -38,7 +38,7 @@ class CommentTest < ActiveSupport::TestCase
   test "should update body" do
     comment = comments(:one)
     comment.body = "Changed my mind after the results of first term went out..."
-    assert comment.save, "Did not update body of comment"
+    assert comment.save!, "Did not update body of comment"
   end
 
   # ----------------------------------------------------------------------
@@ -117,7 +117,7 @@ class CommentTest < ActiveSupport::TestCase
         course: courses(:csc373),
         parent: parent_comment
       )
-      assert parent_comment.save
+      assert parent_comment.save!
     end
     reply = Comment.new(
       body: "This is a reply.",

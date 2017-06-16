@@ -1,10 +1,10 @@
 class Api::V1::RatingsController < ApplicationController
   before_action :authenticate_user!, :except => [:index, :show]
 
-  # GET /courses/:course_id/ratings
+  # GET /terms/:term_id/ratings
   def index
-    course = Course.find(params[:course_id])
-    @ratings = course.ratings
+    term = Term.find(params[:term_id])
+    @ratings = term.ratings
   end
 
   # GET /ratings/:id
@@ -12,10 +12,10 @@ class Api::V1::RatingsController < ApplicationController
     @rating = Rating.find(params[:id])
   end
 
-  # POST /courses/:course_id/ratings
+  # POST /terms/:term_id/ratings
   def create
-    course = Course.find(params[:course_id])
-    @rating = course.ratings.new(params.permit(:value, :rating_type))
+    term = Term.find(params[:term_id])
+    @rating = term.ratings.new(params.permit(:value, :rating_type))
     @rating.user = current_user
 
     if @rating.save
