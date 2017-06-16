@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170615030942) do
+ActiveRecord::Schema.define(version: 20170616001824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20170615030942) do
     t.string "campus"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_courses_on_code", unique: true
+    t.index ["code", "campus"], name: "index_courses_on_code_and_campus", unique: true
   end
 
   create_table "enrolments", force: :cascade do |t|

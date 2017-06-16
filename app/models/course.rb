@@ -1,6 +1,7 @@
 class Course < ApplicationRecord
   # Validations
-  validates :code, uniqueness: true, presence: true
+  validates :code, presence: true
+  validates_uniqueness_of :code, :scope => "campus"
   validates :title, presence: true
 
   # Associations
@@ -18,8 +19,8 @@ class Course < ApplicationRecord
       title = input["name"]
     end
 
-    if Course.exists?(:code => course_code)
-      course = Course.where(code: course_code)
+    if Course.exists?(:code => course_code, :campus => input["campus"])
+      course = Course.where(code: course_code, campus: input["campus"])
       course.update(title:        title,
                     department:   input["department"],
                     division:     input["division"],
