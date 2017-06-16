@@ -17,7 +17,6 @@ Rails.application.routes.draw do
           post 'enrol', on: :member
           delete 'remove_enrol', on: :member
           resources :ratings, only: [:index, :show, :create, :update], shallow: true
-          resources :lectures, only: [:index, :show]
         end
       end
     end
