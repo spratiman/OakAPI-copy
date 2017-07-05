@@ -1,0 +1,311 @@
+swagger: '2.0'
+info:
+  title: Oak
+  description: >-
+    This document defines the specification for the Oak RESTful API. Oak is a
+    platform where students can rate and share their thoughts  on UofT courses.
+  termsOfService: 'http://oakapp.io/terms'
+  contact:
+    email: apiteam@oakapp.io
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+  version: 1.0.0
+host: 'http://localhost:3000'
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/vnd.oak.v1
+paths:
+  /auth:
+    post:
+      tags:
+        - user
+      responses:
+        '200':
+          description: Creates a new user
+  /users:
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: Get all users
+  '/users/:id':
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/User'
+          examples:
+            application/json:
+              id: 1
+              name: Umar Ahmed
+              nickname: Umar
+              user_url: 'http://example.com/users/1'
+        '404':
+          description: User not found
+  '/users/:id/enrolments':
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+    get:
+      tags:
+        - user
+      responses:
+        '200':
+          description: Successful response
+  /courses:
+    get:
+      tags:
+        - course
+      responses:
+        '200':
+          description: A list of courses is returned
+  '/courses/:id':
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+    get:
+      tags:
+        - course
+      responses:
+        '200':
+          description: A course is returned
+          schema:
+            $ref: '#/definitions/Course'
+        '404':
+          description: The course was not found
+  '/courses/:id/comments':
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+    get:
+      tags:
+        - comment
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Comment'
+    post:
+      tags:
+        - comment
+      parameters:
+        - name: comment
+          in: body
+          description: The comment to create
+          required: true
+          schema:
+            $ref: '#/definitions/Comment'
+      responses:
+        '201':
+          description: The comment was created successfully
+          schema:
+            $ref: '#/definitions/Comment'
+  '/courses/:id/ratings':
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+    get:
+      tags:
+        - rating
+      responses:
+        '200':
+          description: A list of ratings for the course
+        '404':
+          description: The course was not found
+  '/comments/:id':
+    put:
+      tags:
+        - comment
+      parameters:
+        - name: comment
+          in: body
+          description: The comment to create
+          required: true
+          schema:
+            $ref: '#/definitions/Comment'
+      responses:
+        '200':
+          description: The comment was updated successfully
+          schema:
+            $ref: '#/definitions/Comment'
+  /ratings:
+    post:
+      tags:
+        - rating
+      parameters:
+        - name: rating
+          in: body
+          description: The rating to create
+          required: true
+          schema:
+            $ref: '#/definitions/Rating'
+      responses:
+        '201':
+          description: The rating was created successfully
+          schema:
+            $ref: '#/definitions/Rating'
+tags:
+  - name: course
+    description: Everything about courses
+  - name: user
+    description: Everything about users
+  - name: comment
+    description: Everything about comments
+  - name: rating
+    description: Everything about ratings
+parameters:
+  skipParam:
+    name: skip
+    in: query
+    description: number of items to skip
+    required: true
+    type: integer
+    format: int32
+  limitParam:
+    name: limit
+    in: query
+    description: max records to return
+    required: true
+    type: integer
+    format: int32
+definitions:
+  ApiResponse:
+    title: ApiResponse
+    required:
+      - status
+      - data
+    type: object
+    properties:
+      status:
+        type: string
+        enum:
+          - success
+          - fail
+          - error
+      message:
+        type: string
+      data:
+        type: object
+        description: Optional data returned from server
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      nickname:
+        type: string
+      user_url:
+        type: string
+  Course:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      code:
+        type: string
+        description: Six character unique alphanumeric code
+      title:
+        type: string
+        description: The official name of the course
+      department:
+        type: string
+        description: The department in which the course is offered
+      division:
+        type: string
+        description: The division that hosts the department
+      level:
+        type: integer
+        format: int64
+        description: The level of the course (ie. 100, 200, 300, or 400)
+      campus:
+        type: string
+        description: The campus that the course is offered at
+      course_url:
+        type: string
+      terms_url:
+        type: string
+      comments_url:
+        type: string
+  Comment:
+    title: Comment
+    required:
+      - course_id
+      - id
+      - body
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      course_id:
+        type: integer
+        format: int64
+        description: ID of the course which is being rated
+      body:
+        type: string
+      num_replies:
+        type: integer
+        format: int64
+      comment_url:
+        type: string
+      user_url:
+        type: string
+      replies:
+        type: array
+        description: Comments that are replies to this comment
+  Rating:
+    type: object
+    required:
+      - user_id
+      - course_id
+      - rating_type
+      - value
+    properties:
+      id:
+        type: integer
+        format: int64
+      user_id:
+        type: integer
+        format: int64
+        description: ID of the user creating the rating
+      course_id:
+        type: integer
+        format: int64
+        description: ID of the course which is being rated
+      rating_type:
+        type: string
+        description: The type of rating
+      value:
+        type: boolean
+        description: The actual rating
