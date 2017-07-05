@@ -7,11 +7,22 @@ class Term < ApplicationRecord
   has_many :users, through: :enrolments
 
   def self.update_db(course_id, input)
-    breadth_num_to_val = Hash[1 => "Creative and Cultural Representations",
-      2 => "Thought, Belief, and Behaviour",
-      3 => "Society and Its Institutions",
-      4 => "Living Things and Their Environment",
-      5 => "The Physical and Mathematical Universes"]
+    case input["campus"]
+      when "UTSG" then
+        breadth_num_to_val = Hash[1 => "Creative and Cultural Representations",
+          2 => "Thought, Belief, and Behaviour",
+          3 => "Society and Its Institutions",
+          4 => "Living Things and Their Environment",
+          5 => "The Physical and Mathematical Universes"]
+
+      when "UTSC" then
+        breadth_num_to_val = Hash[1 => "Arts, Literature & Language",
+          2 => "History, Philosophy & Cultural Studies",
+          3 => "Natural Sciences",
+          4 => "Social & Behavioural Sciences",
+          5 => "Quantitative Reasoning"]
+    end
+
     breadth_string = ""
     input["breadths"].each do |breadth_num|
       breadth_string << breadth_num_to_val[breadth_num] + ";"
