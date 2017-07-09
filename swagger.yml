@@ -69,6 +69,10 @@ responses:
     description: Unauthorized
     schema:
       $ref: '#/definitions/Error'
+  UnprocessableEntity:
+    description: The server understands the content-type of the request, the syntax is correct, but the request was not what the server expected.
+    schema:
+      $ref: '#/definitions/Fail'
 
 # ----------------------------------------------------------------------------
 # Endpoints
@@ -112,10 +116,11 @@ paths:
             password: 'abc123'
             password_confirmation: 'abc123'
     post:
+      description: Create a new user.
       tags:
         - user
       responses:
-        200:
+        201:
           description: Creates a new user
           schema:
             allOf:
@@ -127,11 +132,81 @@ paths:
                   enum: ['success']
                 data:
                   $ref: '#/definitions/User'
+          headers:
+            access-token:
+              description: An access token that can be used to perform subsequent requests as the logged-in user.
+              type: string
+            token-type:
+              description: The type of token used to authenticate.
+              type: string
+              enum: ['Bearer']
+            client:
+              description: The client token.
+              type: string
+            uid:
+              description: The user's unique id.
+              type: string
+            expiry:
+              description: The expiry time of the access token
+              type: integer
+        422:
+          $ref: '#/responses/UnprocessableEntity'
+  /auth/sign_in:
+    parameters:
+    - name: email
+      description: The email address of the user to log in
+      in: header
+      type: string
+      required: true
+    - name: password
+      description: The password of the user to log in
+      in: header
+      type: string
+      required: true
+    post:
+      description: Sign in the provided user. This route provides API authentication token as a response, which is used to access authenticated API routes.
+      tags:
+      - user
+      responses:
+        200:
+          description: The user is now signed in.
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                status:
+                  type: string
+                  enum: ['success']
+                data:
+                  $ref: '#/definitions/User'
+          headers:
+            access-token:
+              description: An access token that can be used to perform subsequent requests as the logged-in user.
+              type: string
+            token-type:
+              description: The type of token used to authenticate.
+              type: string
+              enum: ['Bearer']
+            client:
+              description: The client token.
+              type: string
+            uid:
+              description: The user's unique id.
+              type: string
+            expiry:
+              description: The expiry time of the access token
+              type: integer
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
   /users:
     parameters:
     - $ref: '#/parameters/skipParam'
     - $ref: '#/parameters/limitParam'
     get:
+      description: Return all the users.
       tags:
         - user
       responses:
@@ -392,6 +467,10 @@ definitions:
     required:
       - status
       - data
+    example:
+      status: "error"
+      data:
+        error: "Something is wrong in your request"
   Error:
     type: object
     description: An error occurred in processing the request, i.e. an exception was thrown
@@ -403,6 +482,9 @@ definitions:
     required:
       - status
       - message
+    example:
+      status: "error"
+      message: "There was an error processing your request."
   User:
     type: object
     properties:
