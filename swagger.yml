@@ -37,6 +37,19 @@ tags:
     description: Everything about terms
 
 # ----------------------------------------------------------------------------
+# Security Definitions
+# ----------------------------------------------------------------------------
+
+securityDefinitions:
+  oak_auth:
+    type: oauth2
+    flow: password
+    tokenUrl: http://localhost:3000/oauth/token
+    scopes:
+      read: read everything
+      write: write everything
+
+# ----------------------------------------------------------------------------
 # Define reusable parameters
 # ----------------------------------------------------------------------------
 
@@ -45,14 +58,12 @@ parameters:
     name: skip
     in: query
     description: number of items to skip
-    required: true
     type: integer
     format: int32
   limitParam:
     name: limit
     in: query
     description: max records to return
-    required: true
     type: integer
     format: int32
 
@@ -79,128 +90,6 @@ responses:
 # ----------------------------------------------------------------------------
 
 paths:
-  /auth:
-    parameters:
-      - name: user
-        description: The user to create
-        required: true
-        in: body
-        schema:
-          type: object
-          required:
-          - name
-          - nickname
-          - email
-          - password
-          - password_confirmation
-          properties:
-            name:
-              type: string
-              description: The full name of the user
-            nickname:
-              type: string
-              description: The user's nickname
-            email:
-              type: string
-              description: The user's email address
-            password:
-              type: string
-              description: The user's password
-            password_confirmation:
-              type: string
-              description: The user's password again
-          example:
-            name: 'Richard Hendricks'
-            nickname: 'Richard'
-            email: 'richard@piedpiper.io'
-            password: 'abc123'
-            password_confirmation: 'abc123'
-    post:
-      description: Create a new user.
-      tags:
-        - user
-      responses:
-        201:
-          description: Creates a new user
-          schema:
-            allOf:
-            - $ref: '#/definitions/Success'
-            - type: object
-              properties:
-                status:
-                  type: string
-                  enum: ['success']
-                data:
-                  $ref: '#/definitions/User'
-          headers:
-            access-token:
-              description: An access token that can be used to perform subsequent requests as the logged-in user.
-              type: string
-            token-type:
-              description: The type of token used to authenticate.
-              type: string
-              enum: ['Bearer']
-            client:
-              description: The client token.
-              type: string
-            uid:
-              description: The user's unique id.
-              type: string
-            expiry:
-              description: The expiry time of the access token
-              type: integer
-        422:
-          $ref: '#/responses/UnprocessableEntity'
-  /auth/sign_in:
-    parameters:
-    - name: email
-      description: The email address of the user to log in
-      in: header
-      type: string
-      required: true
-    - name: password
-      description: The password of the user to log in
-      in: header
-      type: string
-      required: true
-    post:
-      description: Sign in the provided user. This route provides API authentication token as a response, which is used to access authenticated API routes.
-      tags:
-      - user
-      responses:
-        200:
-          description: The user is now signed in.
-          schema:
-            allOf:
-            - $ref: '#/definitions/Success'
-            - type: object
-              properties:
-                status:
-                  type: string
-                  enum: ['success']
-                data:
-                  $ref: '#/definitions/User'
-          headers:
-            access-token:
-              description: An access token that can be used to perform subsequent requests as the logged-in user.
-              type: string
-            token-type:
-              description: The type of token used to authenticate.
-              type: string
-              enum: ['Bearer']
-            client:
-              description: The client token.
-              type: string
-            uid:
-              description: The user's unique id.
-              type: string
-            expiry:
-              description: The expiry time of the access token
-              type: integer
-        401:
-          $ref: "#/responses/Unauthorized"
-        404:
-          $ref: "#/responses/NotFound"
   /users:
     parameters:
     - $ref: '#/parameters/skipParam'
@@ -219,11 +108,14 @@ paths:
               properties:
                 status:
                   type: string
-                  enum: ['success']
                 data:
                   type: array
                   items:
-                    $ref: '#/definitions/User'
+                    description: A link to a user.
+                    type: string
+              example:
+                status: success
+                data: ["http://localhost:3000/users/1", "http://localhost:3000/users/2", "http://localhost:3000/users/3"]
   /users/{id}:
     parameters:
       - name: id
@@ -251,7 +143,28 @@ paths:
           $ref: "#/responses/Unauthorized"
         404:
           $ref: "#/responses/NotFound"
-  /users/{id}/terms:
+    patch:
+      description: Update user.
+      tags:
+        - user
+      responses:
+        201:
+          description: User updated
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                status:
+                  type: string
+                  enum: ['success']
+                data:
+                  $ref: '#/definitions/User'
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
+  /users/{id}/enrolments:
     parameters:
       - name: id
         in: path
@@ -279,17 +192,45 @@ paths:
         401:
           $ref: "#/responses/Unauthorized"
         404:
-          $ref: "#/responses/NotFound"  
+          $ref: "#/responses/NotFound"
+    post:
+      tags:
+        - user
+      responses:
+        200:
+          description: Successful response
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
   /courses:
     parameters:
       - $ref: '#/parameters/skipParam'
       - $ref: '#/parameters/limitParam'
     get:
+      description: >-
+        This endpoint returns all the courses that are accessible on Oak across
+        multiple terms. By default, the first 30 are returned. You may use the 
+        limit and skip parameters to retrieve the remaining courses. 
+        **NOTE: some of these courses may not be active in the
+        current session, or may no longer be offered at the University of Toronto.**
       tags:
         - course
       responses:
         200:
           description: A list of courses is returned
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                status:
+                  type: string
+                  enum: ['success']
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Course'
   /courses/{id}:
     parameters:
       - name: id
@@ -298,6 +239,10 @@ paths:
         required: true
         type: integer
     get:
+      description: >-
+        This endpoint returns a single course with the given ID if it exists.
+        IDs are the numerical IDs associated with each course, and **NOT** the
+        course code.
       tags:
         - course
       responses:
@@ -310,8 +255,50 @@ paths:
               properties:
                 data:
                   $ref: '#/definitions/Course'
-        401:
-          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
+  /courses/findByCode:
+    parameters:
+      - name: code
+        in: query
+        description: The course code (case-insensitive)
+        required: true
+        type: string
+    get:
+      description: >-
+        This endpoint returns a single course with the given course code if it
+        exists.
+      tags:
+        - course
+      responses:
+        200:
+          description: A course with the provided course code is returned
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Course'
+        404:
+          $ref: "#/responses/NotFound"
+  /courses/{id}/terms:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+      - $ref: '#/parameters/skipParam'
+      - $ref: '#/parameters/limitParam'
+    get:
+      tags:
+        - term
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Term'
         404:
           $ref: "#/responses/NotFound"  
   /courses/{id}/comments:
@@ -331,44 +318,26 @@ paths:
           description: Successful response
           schema:
             $ref: '#/definitions/Comment'
-        401:
-          $ref: "#/responses/Unauthorized"
         404:
           $ref: "#/responses/NotFound"  
     post:
+      description: Create a new comment on the course with provided ID.
       tags:
         - comment
-      parameters:
-        - name: comment
-          in: body
-          description: The comment to create
-          required: true
-          schema:
-            $ref: '#/definitions/Comment'
+      security:
+      - oak_auth: []
       responses:
         201:
           description: The comment was created successfully
           schema:
-            $ref: '#/definitions/Comment'
-  /courses/{id}/ratings:
-    parameters:
-      - name: id
-        in: path
-        description: ID of the course
-        required: true
-        type: integer
-      - $ref: '#/parameters/skipParam'
-      - $ref: '#/parameters/limitParam'
-    get:
-      tags:
-        - rating
-      responses:
-        200:
-          description: A list of ratings for the course
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Comment'
         401:
           $ref: "#/responses/Unauthorized"
-        404:
-          $ref: "#/responses/NotFound"
   /comments/{id}:
     parameters:
     - name: id
@@ -376,9 +345,21 @@ paths:
       description: ID of the course
       required: true
       type: integer
-    put:
+    get:
+      tags:
+        - comment
+      responses:
+        200:
+          description: The comment with the given ID is returned
+          schema:
+            $ref: '#/definitions/Comment'
+        404:
+          $ref: "#/responses/NotFound"
+    patch:
       tags:
       - comment
+      security:
+      - oak_auth: []
       parameters:
       - name: comment
         in: body
@@ -395,6 +376,27 @@ paths:
           $ref: "#/responses/Unauthorized"
         404:
           $ref: "#/responses/NotFound"
+    delete:
+      tags:
+      - comment
+      security:
+      - oak_auth: []
+      parameters:
+      - name: comment
+        in: body
+        description: The comment to create
+        required: true
+        schema:
+          $ref: '#/definitions/Comment'
+      responses:
+        200:
+          description: The comment was deleted successfully
+          schema:
+            $ref: '#/definitions/Comment'
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
   /comments/{id}/reply:
     parameters:
     - name: id
@@ -403,6 +405,8 @@ paths:
       required: true
       type: integer
     post:
+      security:
+      - oak_auth: []
       tags:
       - comment
       parameters:
@@ -422,8 +426,28 @@ paths:
           $ref: "#/responses/Unauthorized"
         404:
           $ref: "#/responses/NotFound"
-  /ratings:
+  /courses/{id}/ratings:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+      - $ref: '#/parameters/skipParam'
+      - $ref: '#/parameters/limitParam'
+    get:
+      tags:
+        - rating
+      responses:
+        200:
+          description: A list of ratings for the course
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
     post:
+      security:
+      - oak_auth: []
       tags:
         - rating
       parameters:
@@ -438,6 +462,47 @@ paths:
           description: The rating was created successfully
           schema:
             $ref: '#/definitions/Rating'
+  /ratings/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the rating
+        required: true
+        type: integer
+    get:
+      tags:
+        - rating
+      responses:
+        200:
+          description: The rating with the given ID
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
+    patch:
+      security:
+      - oak_auth: []
+      tags:
+        - rating
+      responses:
+        200:
+          description: The rating was updated successfully
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
+    delete:
+      security:
+      - oak_auth: []
+      tags:
+        - rating
+      responses:
+        204:
+          description: The rating was deleted successfully
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
 
 # ----------------------------------------------------------------------------
 # Reusable model defintions
