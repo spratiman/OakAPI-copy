@@ -8,6 +8,11 @@ Doorkeeper.configure do
     current_user || warden.authenticate!(:scope => :user)
   end
 
+  resource_owner_from_credentials do |routes|
+    user = User.find_for_database_authentication(email: params[:username])
+    user if user && user.valid_password?(params[:password])
+  end
+
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   # admin_authenticator do
   #   # Put your admin authentication logic here.
@@ -52,8 +57,8 @@ Doorkeeper.configure do
   # Define access token scopes for your provider
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
-  # default_scopes  :public
-  # optional_scopes :write, :update
+  default_scopes  :public
+  optional_scopes :write, :admin
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -96,7 +101,7 @@ Doorkeeper.configure do
   #   http://tools.ietf.org/html/rfc6819#section-4.4.2
   #   http://tools.ietf.org/html/rfc6819#section-4.4.3
   #
-  # grant_flows %w(authorization_code client_credentials)
+  grant_flows %w(authorization_code client_credentials password)
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
