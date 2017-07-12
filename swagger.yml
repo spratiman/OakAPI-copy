@@ -81,7 +81,9 @@ responses:
     schema:
       $ref: '#/definitions/Error'
   UnprocessableEntity:
-    description: The server understands the content-type of the request, the syntax is correct, but the request was not what the server expected.
+    description: >-
+      The server understands the content-type of the request, the syntax is
+      correct, but the request was not what the server expected.
     schema:
       $ref: '#/definitions/Fail'
 
@@ -115,7 +117,11 @@ paths:
                     type: string
               example:
                 status: success
-                data: ["http://localhost:3000/users/1", "http://localhost:3000/users/2", "http://localhost:3000/users/3"]
+                data: [
+                  "http://localhost:3000/users/1",
+                  "http://localhost:3000/users/2",
+                  "http://localhost:3000/users/3"
+                  ]
   /users/{id}:
     parameters:
       - name: id
@@ -213,7 +219,8 @@ paths:
         multiple terms. By default, the first 30 are returned. You may use the 
         limit and skip parameters to retrieve the remaining courses. 
         **NOTE: some of these courses may not be active in the
-        current session, or may no longer be offered at the University of Toronto.**
+        current session, or may no longer be offered at the University of 
+        Toronto.**
       tags:
         - course
       responses:
@@ -523,7 +530,9 @@ definitions:
       - data
   Fail:
     type: object
-    description: There was a problem with the data submitted, or some pre-condition of the API call wasn't satisfied
+    description: >-
+      There was a problem with the data submitted, or some pre-condition of 
+      the API call wasn't satisfied
     properties:
       status:
         type: string
@@ -538,7 +547,8 @@ definitions:
         error: "Something is wrong in your request"
   Error:
     type: object
-    description: An error occurred in processing the request, i.e. an exception was thrown
+    description: >-
+      An error occurred in processing the request, i.e. an exception was thrown
     properties:
       status:
         type: string
