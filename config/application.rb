@@ -32,9 +32,9 @@ module OakApi
 
     # Configure generators
     config.generators do |g|
-      g.stylesheets = false
-      g.javascripts = false
-      g.helper false
+      g.stylesheets = true
+      g.javascripts = true
+      g.helper true
     end
 
     config.autoload_paths += %W(\#{config.root}/lib)
