@@ -14,7 +14,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    entrypoint: ./docker-entrypoint.sh
+    entrypoint: ./bin/docker-entrypoint
     command: bundle exec rails server -p 3000 -b '0.0.0.0'
     environment:
       - OAK_DATABASE_HOST=db

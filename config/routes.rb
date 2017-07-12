@@ -2,7 +2,9 @@ require 'api_constraints'
 
 Rails.application.routes.draw do
 
-  mount_devise_token_auth_for 'User', at: 'auth', skip: [:omniauth_callbacks]
+  use_doorkeeper
+  devise_for :users
+  root to: "home#index"
 
   scope module: :api, defaults: { format: :json }  do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do

@@ -1,5 +1,5 @@
 class Api::V1::RatingsController < ApplicationController
-  before_action :authenticate_user!, :except => [:index, :show]
+  before_action :doorkeeper_authorize!, :except => [:index, :show]
 
   # GET /terms/:term_id/ratings
   def index

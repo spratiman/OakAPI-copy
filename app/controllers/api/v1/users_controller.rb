@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :authenticate_user!
+  before_action :doorkeeper_authorize!
 
   # GET /users
   def index

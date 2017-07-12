@@ -18,14 +18,8 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
-
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
-
-# Use sqlite3 as the database for Active Record ONLY for testing and development purposes
-# gem 'sqlite3'
 
 # Use PostgreSQL for all environments to ensure consistency
 gem 'pg'
@@ -54,9 +48,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Use Devise for authentication
 gem 'devise', git: 'https://github.com/gogovan/devise.git', branch: 'rails-5.1'
-gem 'erubis'
-gem 'omniauth-facebook'
-gem 'devise_token_auth'
+
+# Use Doorkeeper for OAuth 2.0 provider
+gem 'doorkeeper'
 
 # Use ancestry to add hierarchical structure to models
 gem 'ancestry', '~> 3.0.0'

@@ -1,5 +1,4 @@
-class ApplicationController < ActionController::API
-  include DeviseTokenAuth::Concerns::SetUserByToken
+class ApplicationController < ActionController::Base
   before_action :make_sure_unauthenticated, if: :devise_controller?, :only => [:create]
   before_action :confirm_parameters_present, if: :devise_controller?, :only => [:create]
   before_action :configure_permitted_parameters, if: :devise_controller?
