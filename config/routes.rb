@@ -3,8 +3,8 @@ require 'api_constraints'
 Rails.application.routes.draw do
 
   use_doorkeeper
+  
   devise_for :users
-  root to: "home#index"
 
   scope module: :api, defaults: { format: :json }  do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
@@ -23,4 +23,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  
+  root to: 'root#index'
+
 end
