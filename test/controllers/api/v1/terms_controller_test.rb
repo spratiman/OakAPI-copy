@@ -24,7 +24,7 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get course_terms_url(@course), headers: @headers
     assert_response :success
   end
@@ -40,7 +40,7 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get show with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get term_url(@term), headers: @headers
     assert_response :success
   end
@@ -58,7 +58,7 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show should show term with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get term_url(@term), headers: @headers
     expected = @term.id
     actual = json_response[:data][:id]
@@ -79,7 +79,7 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "enrol should work with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     post enrol_term_url(@term), headers: @headers
 
     assert_equal @term.id, @user.enrolments.as_json[0]['term_id']
@@ -87,7 +87,7 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "enrol should work with auth only once" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     post enrol_term_url(@term), headers: @headers
     assert_response :success
 
@@ -107,7 +107,7 @@ class Api::V1::TermsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "de-enrol should work with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     post enrol_term_url(@term), headers: @headers
     delete remove_enrol_term_url(@term), headers: @headers
 

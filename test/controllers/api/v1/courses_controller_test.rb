@@ -23,7 +23,7 @@ class Api::V1::CoursesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get courses_url, headers: @headers
     assert_response :success
   end
@@ -39,7 +39,7 @@ class Api::V1::CoursesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get show with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get course_url(@course), headers: @headers
     assert_response :success
   end
@@ -57,7 +57,7 @@ class Api::V1::CoursesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show should show course with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get course_url(@course), headers: @headers
     expected = @course.id
     actual = json_response[:data][:id]

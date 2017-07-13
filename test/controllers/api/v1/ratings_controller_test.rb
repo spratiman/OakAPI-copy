@@ -25,7 +25,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get term_ratings_url(@term), headers: @headers
     assert_response :success
   end
@@ -41,7 +41,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get show" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get rating_url(@rating), headers: @headers
     assert_response :success
   end
@@ -59,7 +59,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show should display rating" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get rating_url(@rating), headers: @headers
     expected = @rating.id
     actual = json_response[:data][:id]
@@ -80,7 +80,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should should display user url" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get rating_url(@rating), headers: @headers
     expected = user_url(@user, format: :json)
     actual = json_response[:data][:user_url]
@@ -100,7 +100,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should add rating with auth" do
-    add_auth_headers(@headers, @user_two)
+    sign_in @user_two
     post term_ratings_url(@term), headers: @headers, params: {'value': 1, 'rating_type': 'overall'}
     assert_equal 1, json_response[:value]
     assert_equal @user_two.id, json_response[:user_id]
@@ -115,13 +115,13 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   # Make sure we can remove the rating entirely
   # ----------------------------------------------------------------------
   test "ability to modify rating with different user" do
-    add_auth_headers(@headers, @user_two)
+    sign_in @user_two
     put rating_url(@rating), headers: @headers, params: {'value': 0}
     assert_response 401
   end
 
   test "ability to modify rating with the creator" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     put rating_url(@rating), headers: @headers, params: {'value': 0}
     assert_response :success
 
@@ -129,7 +129,7 @@ class RatingsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "ability to modify rating to not 0 or 1 with the creator" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     put rating_url(@rating), headers: @headers, params: {'value': 3}
     assert_response 400
   end

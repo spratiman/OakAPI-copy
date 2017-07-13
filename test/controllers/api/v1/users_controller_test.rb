@@ -23,7 +23,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get users_url, headers: @headers
     assert_response :success
   end
@@ -34,7 +34,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show user with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get user_url(@user), headers: @headers
     assert_response :success
   end
@@ -45,7 +45,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should display user information with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     get user_url(@user), headers: @headers
     expected = @user.id
     actual = json_response[:data][:id]
@@ -63,7 +63,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show enrolments with auth" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     post enrol_term_url(@term), headers: @headers
     get enrolments_user_url(@user), headers: @headers
     assert_response :success
@@ -80,7 +80,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   # ----------------------------------------------------------------------
 
   test "should not create user when authenticated" do
-    add_auth_headers(@headers, @user)
+    sign_in @user
     post user_registration_url, headers: @headers, params: {'name': 'Gavin Belson', 'nickname': 'Gavin',
       'email': 'gavin@piedpiper.io', 'password': 'hoolibad', 'password_confirmation': 'hoolibad'}
     assert_response :unauthorized
@@ -125,7 +125,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
       'email': 'gavin@piedpiper.io', 'password': 'bloody', 'password_confirmation': 'bloody'}
 
     gavin_user = User.find_by_email('gavin@piedpiper.io')
-    add_auth_headers(@headers, gavin_user)
+    sign_in gavin_user
     put user_registration_url(gavin_user), headers: @headers, params: {'nickname': 'Russ', 'current_password': 'bloody'}
     assert_response :success
 
