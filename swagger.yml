@@ -33,8 +33,6 @@ tags:
     description: Everything about comments
   - name: rating
     description: Everything about ratings
-  - name: term
-    description: Everything about terms
 
 # ----------------------------------------------------------------------------
 # Security Definitions
@@ -97,7 +95,7 @@ paths:
     - $ref: '#/parameters/skipParam'
     - $ref: '#/parameters/limitParam'
     get:
-      description: Return all the users.
+      description: Return all the URL's to the users.
       tags:
         - user
       responses:
@@ -122,14 +120,26 @@ paths:
                   "http://localhost:3000/users/2",
                   "http://localhost:3000/users/3"
                   ]
+    post:
+      description: Create new user
+      tags:
+        - user
+      responses:
+        203:
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Error creating user
   /users/{id}:
     parameters:
       - name: id
         in: path
-        description: ID of the course
+        description: ID of the user
         required: true
         type: integer
     get:
+      description: Get a specific user with the provided ID.
       tags:
         - user
       responses:
@@ -145,16 +155,16 @@ paths:
                   enum: ['success']
                 data:
                   $ref: '#/definitions/User'
-        401:
-          $ref: "#/responses/Unauthorized"
         404:
           $ref: "#/responses/NotFound"
     patch:
-      description: Update user.
+      description: Update user with the given ID.
+      security:
+      - oak_auth: []
       tags:
         - user
       responses:
-        201:
+        200:
           description: User updated
           schema:
             allOf:
@@ -178,6 +188,7 @@ paths:
         required: true
         type: integer
     get:
+      description: Get a list of terms that the user with the given ID  is enrolled in.
       tags:
         - user
       responses:
@@ -195,16 +206,6 @@ paths:
                   type: array
                   items:
                     $ref: '#/definitions/Term'
-        401:
-          $ref: "#/responses/Unauthorized"
-        404:
-          $ref: "#/responses/NotFound"
-    post:
-      tags:
-        - user
-      responses:
-        200:
-          description: Successful response
         401:
           $ref: "#/responses/Unauthorized"
         404:
@@ -299,15 +300,71 @@ paths:
       - $ref: '#/parameters/skipParam'
       - $ref: '#/parameters/limitParam'
     get:
+      description: >-
+        This endpoint returns an array of all the terms offered for the given course.
       tags:
-        - term
+        - course
       responses:
         200:
           description: Successful response
           schema:
-            $ref: '#/definitions/Term'
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Term'
         404:
-          $ref: "#/responses/NotFound"  
+          $ref: "#/responses/NotFound"
+  /terms/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+    get:
+      description: >-
+        This endpoint returns the term with the given ID if it exists.
+      tags:
+        - course
+      responses:
+        200:
+          description: Successful response
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Term'
+        404:
+          $ref: "#/responses/NotFound"
+  /terms/{id}/enroll:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the course
+        required: true
+        type: integer
+    post:
+      description: >-
+        This endpoint allows authorized users to enroll in terms of a course.
+      security:
+      - oak_auth: []
+      tags:
+        - course
+      responses:
+        203:
+          description: Enrolment created
+          schema:
+            $ref: '#/definitions/Term'
+        401:
+          $ref: "#/responses/Unauthorized"
+        404:
+          $ref: "#/responses/NotFound"
   /courses/{id}/comments:
     parameters:
       - name: id
@@ -318,13 +375,22 @@ paths:
       - $ref: '#/parameters/skipParam'
       - $ref: '#/parameters/limitParam'
     get:
+      description: >-
+        This endpoint returns a list of comments for the given course.
       tags:
         - comment
       responses:
         200:
           description: Successful response
           schema:
-            $ref: '#/definitions/Comment'
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Comment'
         404:
           $ref: "#/responses/NotFound"  
     post:
@@ -353,53 +419,61 @@ paths:
       required: true
       type: integer
     get:
+      description: >-
+        This endpoint returns the comment with the given ID if it exists.
       tags:
         - comment
       responses:
         200:
           description: The comment with the given ID is returned
           schema:
-            $ref: '#/definitions/Comment'
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Comment'
         404:
           $ref: "#/responses/NotFound"
     patch:
+      description: >-
+        This endpoint updates the body of the comment with the given ID if it exists
+        and returns the updated comment.
       tags:
       - comment
       security:
       - oak_auth: []
       parameters:
-      - name: comment
-        in: body
+      - in: body
+        name: comment
         description: The comment to create
         required: true
         schema:
-          $ref: '#/definitions/Comment'
+          type: string
       responses:
         200:
           description: The comment was updated successfully
           schema:
-            $ref: '#/definitions/Comment'
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Comment'
         401:
           $ref: "#/responses/Unauthorized"
         404:
           $ref: "#/responses/NotFound"
     delete:
+      description: >-
+        This endpoint deletes the comment with the given ID.
       tags:
       - comment
       security:
       - oak_auth: []
-      parameters:
-      - name: comment
-        in: body
-        description: The comment to create
-        required: true
-        schema:
-          $ref: '#/definitions/Comment'
       responses:
         200:
           description: The comment was deleted successfully
-          schema:
-            $ref: '#/definitions/Comment'
         401:
           $ref: "#/responses/Unauthorized"
         404:
@@ -412,6 +486,8 @@ paths:
       required: true
       type: integer
     post:
+      description: >-
+        This endpoint adds a reply to the given comment.
       security:
       - oak_auth: []
       tags:
@@ -421,14 +497,17 @@ paths:
         in: body
         required: true
         schema:
-          properties:
-            body:
-              type: string
+          type: string
       responses:
         201:
           description: The reply was created successfully
           schema:
-            $ref: '#/definitions/Comment'
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Comment'
         401:
           $ref: "#/responses/Unauthorized"
         404:
@@ -443,16 +522,25 @@ paths:
       - $ref: '#/parameters/skipParam'
       - $ref: '#/parameters/limitParam'
     get:
+      description: Get all the ratings for the given course.
       tags:
         - rating
       responses:
         200:
           description: A list of ratings for the course
-        401:
-          $ref: "#/responses/Unauthorized"
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/definitions/Rating'
         404:
           $ref: "#/responses/NotFound"
     post:
+      description: Create a rating on the given course.
       security:
       - oak_auth: []
       tags:
@@ -463,12 +551,24 @@ paths:
           description: The rating to create
           required: true
           schema:
-            $ref: '#/definitions/Rating'
+            properties:
+              rating_type:
+                type: string
+                enum: ['difficult', 'useful', 'repeat']
+                description: The type of rating
+              value:
+                type: boolean
+                description: The actual rating
       responses:
         201:
           description: The rating was created successfully
           schema:
-            $ref: '#/definitions/Rating'
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Rating'
   /ratings/{id}:
     parameters:
       - name: id
@@ -477,16 +577,26 @@ paths:
         required: true
         type: integer
     get:
+      description: >-
+        This endpoint returns the rating with the given ID if it exists.
       tags:
         - rating
       responses:
         200:
           description: The rating with the given ID
-        401:
-          $ref: "#/responses/Unauthorized"
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Comment'
         404:
           $ref: "#/responses/NotFound"
     patch:
+      description: >-
+        This endpoint updates the rating with the given ID and returns the 
+        updated rating.
       security:
       - oak_auth: []
       tags:
@@ -494,11 +604,20 @@ paths:
       responses:
         200:
           description: The rating was updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/Success'
+            - type: object
+              properties:
+                data:
+                  $ref: '#/definitions/Rating'
         401:
           $ref: "#/responses/Unauthorized"
         404:
           $ref: "#/responses/NotFound"
     delete:
+      description: >-
+        This endpoint deletes the rating with the given ID.
       security:
       - oak_auth: []
       tags:
@@ -672,22 +791,21 @@ definitions:
   Rating:
     type: object
     required:
-      - user_id
-      - course_id
       - rating_type
       - value
     properties:
       id:
         type: integer
-      user_id:
-        type: integer
-        description: ID of the user creating the rating
-      course_id:
-        type: integer
-        description: ID of the course which is being rated
       rating_type:
         type: string
+        enum: ['difficult', 'useful', 'repeat']
         description: The type of rating
       value:
         type: boolean
         description: The actual rating
+      user_url:
+        type: string
+        description: URL of the user creating the rating
+      course_url:
+        type: string
+        description: URL of the course which is being rated
