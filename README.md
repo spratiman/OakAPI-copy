@@ -18,7 +18,7 @@ Make sure Docker is running. Open a console in the root of the project directory
 docker-compose build
 ```
 
-This will download and build the required images to run the API. **WARNING: This step takes quite a while depending on your internet connection, so feel free to take this time to grab a coffee or read through the rest of this document.** If you make a change to the Dockerfiles or docker-compose.yml, you will have to run this command again to rebuild the image, but depending on your changes, subsequent builds will be much faster due to caching. At this point you could try to run `docker-compose up`, which starts all the required services, but you will receive a bunch of errors because the database has not been generated yet.
+This will download and build the required images to run the API for development. **WARNING: This step takes quite a while depending on your internet connection, so feel free to take this time to grab a coffee or read through the rest of this document.** If you make a change to the Dockerfiles or docker-compose.yml, you will have to run this command again to rebuild the image, but depending on your changes, subsequent builds will be much faster due to caching. At this point you could try to run `docker-compose up`, which starts all the required services, but you will receive a bunch of errors because the database has not been generated yet.
 
 ### Generating the Database
 
@@ -51,7 +51,7 @@ docker-compose run web bundle exec rails c
 You will need to create a new user with email and password using the create method on the User model:
 
 ```
-User.create(name: 'John Smith', email: 'test@example.com', password: 'valid_password');
+User.create(name: 'John Smith', nickname: 'John', email: 'test@example.com', password: 'valid_password')
 ```
 
 You can exit out of the Rails console by simply typing `exit`.
@@ -100,30 +100,7 @@ docker-compose down
 
 ## API Endpoints
 
-The API exposes the following RESTful endpoints:
-
-| HTTP Verb | Endpoint                  | Functionality            |
-|:---------:|:-------------------------:|:------------------------:|
-| POST      | /auth                     | Create account           |
-| GET       | /auth                     | Show account             |
-| PUT       | /auth                     | Update account           |
-| DELETE    | /auth                     | Delete account           |
-| POST      | /auth/sign_in             | Login                    |
-| DELETE    | /auth/sign_out            | Logout                   |
-| GET       | /users                    | List all users           |
-| GET       | /users/:id                | Show a user              |
-| GET       | /courses                  | List all courses         |
-| GET       | /courses/:id              | Show a course            |
-| GET       | /courses/:id/comments     | List all course comments |
-| POST      | /courses/:id/comments     | Add a course comment     |
-| GET       | /comments/:id             | Show a course comment    |
-| PUT       | /comments/:id             | Update a course comment  |
-| DELETE    | /comments/:id             | Delete a course comment  |
-| POST      | /comments/:id/reply       | Reply to a comment       |
-| GET       | /courses/:id/ratings      | List all course ratings  |
-| POST      | /courses/:id/ratings      | Add a course rating      |
-| GET       | /ratings/:id              | Show a course rating     |
-| PUT       | /ratings/:id              | Update a course rating   |
+Exposed endpoints are visible by visiting the root path (ie. `localhost:3000`), which redirects to the Swagger documentation.
 
 ## Support
 
