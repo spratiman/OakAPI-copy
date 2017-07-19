@@ -1,0 +1,4 @@
+CREATE DATABASE oak_development;
+CREATE DATABASE oak_test;
+GRANT ALL PRIVILEGES ON DATABASE oak_development TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE oak_test TO postgres;

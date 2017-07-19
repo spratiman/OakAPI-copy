@@ -26,4 +26,4 @@
 # Ignore sublime files
 *.sublime*
 
-.env
+*.env

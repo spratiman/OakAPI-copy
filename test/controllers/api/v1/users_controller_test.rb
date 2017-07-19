@@ -117,7 +117,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
 
     gavin_user = User.find_by_email('gavin@piedpiper.io')
     put user_registration_url(gavin_user), headers: @headers, params: {'nickname': 'Russ', 'current_password': 'bloody'}
-    assert_response :not_found
+    assert_response :unauthorized
   end
 
   test "should let us update user" do
