@@ -50,12 +50,14 @@ namespace :app do
                                         :progress_mark  => ' ',
                                         :remainder_mark => "\u{FF65}")
       progress = 0
-      page_content.each_line { |line|
-        course = JSON.parse(line)
-        Course.update_db(course)
-        progress += line.size
-        progressbar.progress = (progress/(file_size * 1.0) * 100)
-      }
+      Course.transaction do
+        page_content.each_line { |line|
+          course = JSON.parse(line)
+          Course.update_db(course)
+          progress += line.size
+          progressbar.progress = (progress/(file_size * 1.0) * 100)
+        }
+      end
       progressbar.progress = 100
     }
     puts "\nCourses updated"
