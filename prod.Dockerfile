@@ -14,4 +14,5 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 COPY . $APP_HOME
 
+RUN ["chmod", "+x", "./bin/docker-entrypoint"]
 ENTRYPOINT ["./bin/docker-entrypoint"]
