@@ -2,12 +2,10 @@ version: '3'
 services:
   db:
     image: postgres
-    restart: always
     env_file:
       - db.env
   web:
     image: oakdev/oak-api:test
-    restart: always
     entrypoint: ./bin/docker-entrypoint
     command: bundle exec rails server -p 3000 -b '0.0.0.0'
     ports:
