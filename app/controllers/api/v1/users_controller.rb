@@ -1,6 +1,6 @@
-class Api::V1::UsersController < ApplicationController
+class Api::V1::UsersController < Api::V1::BaseController
+
   before_action :doorkeeper_authorize!
-  before_action :authenticate_user!
 
   # GET /users
   def index
@@ -18,22 +18,6 @@ class Api::V1::UsersController < ApplicationController
     @enrolment = user.enrolments
 
     render json: @enrolment
-  end
-
-private
-
-  def authenticate_user!
-    if doorkeeper_token
-      Thread.current[:current_user] = User.find(doorkeeper_token.resource_owner_id)
-    end
-
-    return if current_user
-
-    render json: { errors: ['User is not authenticated!'] }, status: :unauthorized
-  end
-
-  def current_user
-    Thread.current[:current_user]
   end
 
 end

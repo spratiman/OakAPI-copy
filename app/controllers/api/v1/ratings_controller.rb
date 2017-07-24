@@ -1,6 +1,5 @@
-class Api::V1::RatingsController < ApplicationController
+class Api::V1::RatingsController < Api::V1::BaseController
   before_action :doorkeeper_authorize!, :except => [:index, :show]
-  before_action :authenticate_user!, :except => [:index, :show]
 
   # GET /terms/:term_id/ratings
   def index
@@ -40,20 +39,6 @@ class Api::V1::RatingsController < ApplicationController
   end
 
 private
-
-  def authenticate_user!
-    if doorkeeper_token
-      Thread.current[:current_user] = User.find(doorkeeper_token.resource_owner_id)
-    end
-
-    return if current_user
-
-    render json: { errors: ['User is not authenticated!'] }, status: :unauthorized
-  end
-
-  def current_user
-    Thread.current[:current_user]
-  end
 
   def verify_user
     if @rating.user != current_user

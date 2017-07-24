@@ -16,7 +16,7 @@ class ActiveSupport::TestCase
 
   # Helper method that signs in user (stub)
   def sign_in user
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id, scopes: 'public')
-    ApplicationController.any_instance.stubs(:doorkeeper_token).returns(token)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id, scopes: [Doorkeeper::OAuth::Scopes])
+    Api::V1::BaseController.any_instance.stubs(:doorkeeper_token).returns(token)
   end
 end

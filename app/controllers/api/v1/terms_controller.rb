@@ -1,6 +1,6 @@
-class Api::V1::TermsController < ApplicationController
-  before_action :doorkeeper_authorize!, :except => [:index, :show]
-  before_action :authenticate_user!, :except => [:index, :show]
+class Api::V1::TermsController < Api::V1::BaseController
+
+  before_action :authenticate_user!, except: [:index, :show]
 
   # GET /courses/:course_id/terms
   def index
@@ -37,20 +37,6 @@ class Api::V1::TermsController < ApplicationController
   end
 
 private
-
-  def authenticate_user!
-    if doorkeeper_token
-      Thread.current[:current_user] = User.find(doorkeeper_token.resource_owner_id)
-    end
-
-    return if current_user
-
-    render json: { errors: ['User is not authenticated!'] }, status: :unauthorized
-  end
-
-  def current_user
-    Thread.current[:current_user]
-  end
 
   def verify_user
     if @enrolment.as_json[0]['user_id'] != current_user.id
