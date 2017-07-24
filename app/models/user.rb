@@ -6,8 +6,8 @@ class User < ApplicationRecord
           :validatable, :confirmable
 
   # Validations
-  validates :name, :nickname, presence: true
-  validates :email, uniqueness: true, presence: true
+  validates_presence_of :email, :password, :name, :nickname
+  validates_uniqueness_of :email
 
   # Associations
   has_many :comments, inverse_of: :user

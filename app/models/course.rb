@@ -1,8 +1,7 @@
 class Course < ApplicationRecord
   # Validations
-  validates :code, presence: true
+  validates_presence_of :title, :code, :division, :department, :campus, :level
   validates_uniqueness_of :code, :scope => "campus"
-  validates :title, presence: true
 
   # Associations
   has_many :terms, inverse_of: :course

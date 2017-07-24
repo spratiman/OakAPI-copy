@@ -63,6 +63,10 @@ class Api::V1::CommentsController < Api::V1::BaseController
 
 private
 
+  def comment_params
+    params.permit(:body)
+  end
+
   def verify_user
     if @comment.user != current_user
       error_msg = { errors: 'You are not the author of this comment' }
