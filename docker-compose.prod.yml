@@ -3,7 +3,7 @@ services:
   db:
     image: postgres
     env_file:
-      - db.env
+      - ./docker/db.env
   web:
     image: oakdev/oak-api:test
     entrypoint: ./bin/docker-entrypoint
@@ -13,4 +13,4 @@ services:
     depends_on:
       - db
     env_file:
-      - web.env
+      - ./docker/web.env
