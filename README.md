@@ -1,8 +1,6 @@
 # OakAPI
 
-[![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/?repo=https://github.com/uoftweb/OakAPI)
-
-A RESTful API that Oak uses to manage data related to courses, comments, ratings, users, etc. The API returns all data in JSON format and uses HTTP verbs and status codes to communicate intent. This API is built on Ruby on Rails and makes use of [Devise](https://github.com/plataformatec/devise) and [devise_auth_token](https://github.com/lynndylanhurley/devise_token_auth) for user authentication. JSON templates are also generated using [Jbuilder](https://github.com/rails/jbuilder).
+A RESTful API that Oak uses to manage data related to courses, comments, ratings, users, etc. The API returns data in JSON format and uses HTTP verbs and status codes to communicate intent. This API is built on Ruby on Rails and makes use of [Devise](https://github.com/plataformatec/devise) and [Doorkeeper](https://github.com/doorkeeper-gem/doorkeeper) for authentication and OAuth. JSON templates are also generated using [Jbuilder](https://github.com/rails/jbuilder).
 
 ## Dependencies
 
@@ -22,36 +20,26 @@ This will download and build the required images to run the API. **WARNING: This
 
 ### Generating the Database
 
-To generate the database for development and testing environments, run this commands in your console:
+To generate the database for development and testing environments, and populate it using the saved datasets, run this commands in your console:
 
 ```
-docker-compose run web bundle exec rails db:setup
+docker-compose run --rm web bundle exec rails app:install
 ```
 
-This will generate development and test databases, as well as run migrations. You only have to do this once.
-
-### Populating the Database with Courses
-
-To populate the database with courses from [Cobalt datasets](https://github.com/cobalt-uoft/datasets), run:
-
-```
-docker-compose run web bundle exec rake app:update_courses
-```
-
-This may take some time, but when it completes, your development database will be populated with courses from the most recent academic year.
+This will generate development and test databases, as well as run migrations. You only have to do this once. It also populates your development database with courses from the most recent academic year.
 
 ### Creating a User
 
 You may also want to create a user so that you can get an authentication token to test different routes. To do this, you will need to run a rails console:
 
 ```
-docker-compose run web bundle exec rails c
+docker-compose run --rm web bundle exec rails c
 ```
 
 You will need to create a new user with email and password using the create method on the User model:
 
 ```
-User.create(name: 'John Smith', email: 'test@example.com', password: 'valid_password');
+User.create(name: 'John Smith', nickname: 'John', email: 'test@example.com', password: 'valid_password');
 ```
 
 You can exit out of the Rails console by simply typing `exit`.
@@ -70,6 +58,12 @@ To run tests in a running container:
 
 ```
 docker-compose exec web bundle exec rails test
+```
+
+or run specs with
+
+```
+docker-compose exec web bundle exec rspec
 ```
 
 To stop the containers:
