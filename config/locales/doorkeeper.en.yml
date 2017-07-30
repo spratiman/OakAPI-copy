@@ -17,8 +17,14 @@ en:
   doorkeeper:
     scopes:
       public: 'Access your public data'
-      write: 'Update your information'
-      admin: 'Change your preferences'
+      account:read: 'Read your account details such as name, nickname, email, etc.'
+      account:write: 'Modify your account details'
+      terms:read: 'Read what terms you are enrolled in'
+      terms:write: 'Modify what terms you are enrolled in'
+      rating:read: 'Read your ratings on courses'
+      rating:write: 'Create/modify your ratings on courses'
+      comment:read: 'Read your comments on courses'
+      comment:write: 'Create/modify your comments on courses'
     applications:
       confirmations:
         destroy: 'Are you sure?'
