@@ -45,5 +45,7 @@ RSpec.describe Course, type: :model do
       subject.level = nil
       expect(subject).to_not be_valid
     end
+
+    it { should validate_uniqueness_of(:code).scoped_to(:campus) }
   end
 end
