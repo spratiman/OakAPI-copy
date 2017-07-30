@@ -1,2 +1,2 @@
-FROM postgres:9.4
+FROM postgres:latest
 ADD ./db/init.sql /docker-entrypoint-initdb.d/

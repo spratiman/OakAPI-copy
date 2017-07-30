@@ -11,6 +11,8 @@ gem 'devise'
 gem 'doorkeeper'
 gem 'ancestry', '~> 3.0.0'
 
+gem 'activerecord-import', '>= 0.2.0'
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 3.5'
@@ -28,8 +30,8 @@ group :test do
   gem 'guard'
   gem 'guard-minitest'
   gem 'mocha'
-
-  gem 'factory_girl_rails', '~> 4.0'
+  gem "rspec"
+  gem 'factory_girl_rails', :require => false
   gem 'shoulda-matchers', '~> 3.1'
   gem 'faker'
   gem 'database_cleaner'
