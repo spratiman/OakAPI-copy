@@ -3,7 +3,11 @@ RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs po
 
 ADD Gemfile* /tmp/
 WORKDIR /tmp
-RUN gem install bundler && bundle install --jobs 20 --retry 5
+RUN gem install bundler && bundle install --jobs 20 --retry 5 --without development test
+
+# Set Rails to run in production
+ENV RAILS_ENV production 
+ENV RACK_ENV production
 
 ENV APP_HOME /oak-api
 RUN mkdir $APP_HOME
